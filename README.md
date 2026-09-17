@@ -2,6 +2,8 @@
 
 这是我的个人主页项目（蓝喜阳）。第一版原型已完成；第二版（V2）已定稿；**第三版（V3）在首页新增「意见反馈」功能，当前在线版本即第三版**。
 
+> **线上地址（GitHub Pages）**：<https://qilumanman.github.io/>　｜　源码仓库：<https://github.com/Qilumanman/Qilumanman.github.io>
+
 V2 的视觉共经历三次整页迭代，每次都留档：
 
 1. **深色科技风**（`版本存档/V2-深色科技风/`）—— 最初的暗色实验室质感。
@@ -18,8 +20,9 @@ V2 的视觉共经历三次整页迭代，每次都留档：
 - 访客要填 **5 项**：① 名字或昵称（可留空，默认匿名访客）② 与主页主人的关系 ③ 本条反馈针对的设备 ④ 反馈内容 ⑤ 提交时间（自动生成）。
 - 隐私承诺（写在同一区的隐私卡里）：反馈**不公开**、他人看不到也删不掉；填了联系方式才会回复；可以完全匿名。
 - **前端只写不读**：`GET /api/feedback` 一律返回 405，公开接口永不返回联系方式；只有作者本地后台能看到全部字段。
-- 数据通道双模式（`js/feedback-config.js` 里的 `mode`）：`local` = 本地 `server.py`（默认），`supabase` = 线上 Supabase（用 `anon public` 公开密钥，RLS **只允许 INSERT、禁止 SELECT**）。
-- 作者后台 `http://127.0.0.1:8000/admin?token=<令牌>`：统计卡 + 5 列表格 + 标记已读 / 已解决 + 删除单条 + 导出 CSV。令牌存在 `db/admin_token.txt`，**不提交仓库**。
+- 数据通道双模式（`js/feedback-config.js` 里的 `mode`）：**线上发布用 `supabase`（当前启用）** —— 走 Supabase 的 `anon public` 公开密钥，RLS **只允许 INSERT、禁止 SELECT**，匿名读不出来；`local` = 本地 `server.py` 备用（离线演示 / 自测）。
+- **线上反馈在哪里看**：Supabase 控制台 → Table Editor → `public.feedback`（也可用 SQL Editor 查询或导出 CSV）。线上站点是纯静态托管，所以**没有**部署在线的作者后台页面。
+- 本地备用后台 `http://127.0.0.1:8000/admin?token=<令牌>`：统计卡 + 5 列表格 + 标记已读 / 已解决 + 删除单条 + 导出 CSV；它读的是本地 SQLite，**看不到线上反馈**。令牌存在 `db/admin_token.txt`，**不提交仓库**。
 
 目录分为两大块：
 

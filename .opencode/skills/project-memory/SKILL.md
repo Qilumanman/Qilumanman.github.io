@@ -285,6 +285,20 @@ $line = 'cmd.exe /c python "' + $srv + '" --port 8000 >> "' + $log + '" 2>> "' +
   - **⚠️ PowerShell 函数命名坑（第 20 次，踩过）**：自定义辅助函数**不要取名 `CP`**（PowerShell 别名大小写不敏感，`cp` = `Copy-Item`）——实测调用 `CP $path` 被解析成 `Copy-Item`，抛出一堆 `PathNotFound/DirectoryExist` 并把诊断输出全打成乱码，白排查一轮。命名请用 `Show-CodePoints` 这类明确名字。**同理不要用 `%`、`?`、`where`、`sc`、`curl` 之类做函数名。**
 - **⚠️ 坑（第 20 次讨论）：`read` 工具读**.deepworks/tmp** 下的中文绝对路径图片可能报 `File not found`（即使文件确实存在且 MD5 正常）。绕过办法：先用纯 ASCII 脚本把图复制到 `C:\Users\ASUS\AppData\Local\Temp\opencode\`，再读那个 ASCII 路径 —— 实测立刻可读，视觉理解也能正常返回。**
 
+## GitHub Pages 发布（第 24 次讨论完成）
+
+- **线上地址**：https://qilumanman.github.io/ ｜ 仓库 `Qilumanman/Qilumanman.github.io`（public，`main` 分支根目录，`https_enforced=true`）。
+- **首个提交**：`d20d37a`「第三版：新增「意见反馈」功能并接入 Supabase 线上存储」，**33 个文件 / 6472 行**。身份**只写本仓库**：`git config --local user.name Qilumanman` / `user.email Qilumanman@users.noreply.github.com`（全局仍为空，未动）。
+- **⚠️⚠️ 坑（本轮最重要的一条）：DeepWorks 的常规 shell 读不到 Windows 凭据管理器。** 症状极具误导性 —— `gh auth login` 的后台日志明确写着 `✓ Logged in as Qilumanman`、`%APPDATA%\GitHub CLI\hosts.yml` 也落盘（内容为 `github.com: / git_protocol: https / users: Qilumanman: / user: Qilumanman`，**没有 `oauth_token` 行是正常的，令牌在凭据管理器里**）、`cmdkey /list` 能看到 `gh:github.com:Qilumanman`，但常规 shell 里 `gh auth status`、`gh api`、`gh repo create` 一律报「You are not logged into any GitHub hosts」。
+  - **判据**：`gh auth status` 说没登录，但 `cmdkey /list | Select-String github` 有 `gh:github.com:<用户>`，且分离进程里同一命令正常返回 → 就是本坑，不要去重新登录。
+  - **✅ 解法**：所有需要 gh / git 凭据的操作**一律走 WMI 分离进程**：把命令写成纯 ASCII 的 `.cmd` 落 `.deepworks/tmp/`，用 `([wmiclass]"Win32_Process").Create('cmd.exe /c .deepworks\tmp\xxx.cmd', $root)` 启动，输出重定向到 `.deepworks/tmp\*.log`，`Start-Sleep` 后再回读日志。本轮 `ghlogin.cmd` / `ghprobe.cmd` / `publish.cmd` 三个脚本即为此模式。
+  - 登录用 `echo. | "<gh.exe 全路径>" auth login --hostname github.com --git-protocol https --web`（`set BROWSER=echo` 阻止它弹系统浏览器），一次性码 15 分钟内有效，日志里会打印 `! One-time code (XXXX-XXXX) copied to clipboard`。
+- **`<用户名>.github.io` 仓库的 Pages 会自动开启**，再显式 `POST /repos/{owner}/{repo}/pages` 会返回 `409 GitHub Pages is already enabled` —— 这是**正常结果不是失败**，用 `GET /repos/{owner}/{repo}/pages` 读 `status: building → built` 即可。
+- **⚠️ 坑：`.gitignore` 对「已被跟踪的文件」完全不生效。** 本轮先 `git add -A`（当时 `uploads/` 未入忽略表）→ 再往 `.gitignore` 补 `uploads/` → 重新 `git add -A` **依然是 60 个文件**。`git check-ignore -v uploads/<file>` 返回「未忽略」正是这个原因。**正确姿势：`git rm -r --cached uploads` 显式取消跟踪**（只动索引、磁盘文件照旧保留），之后忽略规则才生效（60 → 33 个文件）。诊断口诀：**目录本身 `check-ignore` 命中、里面的文件却不命中 = 文件已被跟踪。**
+- **发布前必查清单（脚本化，命中必须为 0）**：`uploads/`（会话上传素材）、`.deepworks/`、`版本存档/`、`作业提交区/`、`outputs/`、`db/feedback.db`、`db/admin_token.txt`。
+- **线上保真核验配方（强烈推荐，替代肉眼看图）**：① `curl.exe -s "https://api.github.com/repos/<o>/<r>/git/trees/main?recursive=1"` → `ConvertFrom-Json` 数文件、按文件名模式扫私有内容；② 用 `curl.exe -s -o <tmp> -w "%{http_code}"` 把线上文件抓回来与本地**逐文件 MD5 比对**（本轮 8 个文件不一致数 0）；③ 私有地址逐个探 `HTTP 404`（`db/admin_token.txt`、`db/feedback.db`、`.deepworks/tmp/publish.log`）；④ 线上 HTML 里 `[regex]::Matches` 扫本地令牌明文出现次数（必须 0）。**注意 `mode: "supabase"` 与 `sb_publishable_` 在 `index.html` 中出现 0 次是正常的 —— 它们在外链的 `js/feedback-config.js` 里，不是内联的。**
+- **截图窗口高比内容高时不要慌**：`--window-size=1440,6200` 截线上页会得到 1440×6200（内容只有 5548，多出的是空白底），文件大小会比本地整页图大一点（1,667,529 B vs 1,613,241 B），这不是渲染异常。
+
 ## Markdown 转换
 
 - 项目自带转换工具：`C:\Users\ASUS\.deepworks\tools\dw-markitdown.exe`，用法 `dw-markitdown <input> <output>`。
