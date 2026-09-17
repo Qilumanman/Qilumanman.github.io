@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS feedback (
     -- 取值约束：与主页主人的关系只能是这几种
     CONSTRAINT ck_feedback_relation
         CHECK (relation IS NULL OR relation IN
-               ('classmate', 'friend', 'family', 'teacher', 'online', 'other')),
+               ('classmate', 'friend', 'family', 'teacher', 'lover', 'other')),
     -- 取值约束：设备只能是这几种
     CONSTRAINT ck_feedback_device
         CHECK (device IS NULL OR device IN

@@ -66,9 +66,11 @@ create table if not exists public.feedback (
     constraint ck_feedback_contact_len
         check (contact is null or char_length(contact) <= 120),
     -- 取值约束：与主页主人的关系只能是这几种
+    -- 注：已建好的库要把 online(网友) 改成 lover(恋人)，需另跑 db/migration_relation_lover.sql
+    --     （check 约束不能就地改，必须 drop + add）
     constraint ck_feedback_relation
         check (relation is null or relation in
-               ('classmate', 'friend', 'family', 'teacher', 'online', 'other')),
+               ('classmate', 'friend', 'family', 'teacher', 'lover', 'other')),
     -- 取值约束：本条反馈针对的设备只能是这几种
     constraint ck_feedback_device
         check (device is null or device in
@@ -77,7 +79,7 @@ create table if not exists public.feedback (
 
 comment on table  public.feedback            is '个人主页访客意见反馈';
 comment on column public.feedback.name       is '① 名字或昵称（可空，页面默认署名「匿名访客」）';
-comment on column public.feedback.relation   is '② 与主页主人的关系：classmate=同学 / friend=朋友 / family=家人 / teacher=老师 / online=网友 / other=其他';
+comment on column public.feedback.relation   is '② 与主页主人的关系：classmate=同学 / friend=朋友 / family=家人 / teacher=老师 / lover=恋人 / other=其他';
 comment on column public.feedback.device     is '③ 本条反馈针对的设备：phone=手机 / tablet=平板 / computer=电脑 / other=其他设备';
 comment on column public.feedback.message    is '④ 反馈内容（必填，1-1000 字）';
 comment on column public.feedback.created_at is '⑤ 提交时间（由数据库自动写入）';

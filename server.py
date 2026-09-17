@@ -67,13 +67,13 @@ CATEGORY_LABELS = {
 STATUS_LABELS = {"new": "未读", "read": "已读", "resolved": "已解决"}
 
 # 访客填的「与主页主人的关系」「本条反馈针对的设备」：只收固定几档，防止乱填
-RELATIONS = ("classmate", "friend", "family", "teacher", "online", "other")
+RELATIONS = ("classmate", "friend", "family", "teacher", "lover", "other")
 RELATION_LABELS = {
     "classmate": "同学",
     "friend": "朋友",
     "family": "家人",
     "teacher": "老师",
-    "online": "网友",
+    "lover": "恋人",
     "other": "其他",
 }
 DEVICES = ("phone", "tablet", "computer", "other")
