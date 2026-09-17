@@ -62,9 +62,11 @@ metadata:
 
 > 每次进入新阶段或新版本时，在此更新。
 
-- 当前版本：**V3（进行中 · 第三版）** —— 在 V2「黄白杂志风」定稿基础上新增「意见反馈」；页脚已改为「个人主页（第三版）」，存档目录用 `V3-*`。V2 已定稿归档（`版本存档/V2-黄白杂志风/`，含第 18 次撤图 + 废图移出），V1 已定稿并归档。
+- 当前版本：**V3（第三版）· 已定稿并归档**（2026-09-17 定稿；线上即第三版最终形态）—— 在 V2「黄白杂志风」定稿基础上新增「意见反馈」；页脚为「个人主页（第三版）」，存档目录 `V3-*`。V2 已定稿归档（`版本存档/V2-黄白杂志风/`，含第 18 次撤图 + 废图移出），V1 已定稿并归档。
+  - **V3 定稿快照（第 26 次实测）**：`index.html` **37,063 字节 / `5E9FC5B595393F968678FBF8925FC88A`**（与线上逐字节一致）；归档 `版本存档/V3-意见反馈/`（`备份/` 21 文件 + `服务端源码/` 5 文件 + `完整截图/` 4 张 + `归档说明.md`）。全部现行校验值见「第 26 次讨论」一节。
 - **版本归属（第 19–20 次讨论更新）**：此前「不新建第三版、页脚保持第二版」的约定**已作废**。用户已确认**正式升为第三版**：页脚版本号、`README.md`、存档目录名、`作业提交区` 截图命名一并更新为第三版。
-- **第 23–25 次讨论**：V3 已接 Supabase 并**发布上线**（https://qilumanman.github.io/，见下文「GitHub Pages 发布」）；**第 25 次**把关系选项「网友」换成「恋人」并已发布推送 —— 遗留一步：线上 Supabase 需手动执行 `db/migration_relation_lover.sql`（改 `ck_feedback_relation` 约束）。
+- **第 23–25 次讨论**：V3 已接 Supabase 并**发布上线**（https://qilumanman.github.io/，见下文「GitHub Pages 发布」）；**第 25 次**把关系选项「网友」换成「恋人」并已发布推送，**线上约束 `ck_feedback_relation` 已完成迁移**（用户已在 SQL Editor 执行 `db/migration_relation_lover.sql`；anon 探针实测 `lover`→201、`online`→400）。
+- **第 26 次讨论（2026-09-17）**：**第三版最终形态定稿归档完成** —— 重拍 4 张最终截图（同时覆盖 `作业提交区/01-截图/第三版-*.png`）、刷新 `版本存档/V3-意见反馈/` 的 `备份/`（21/21 与仓库根逐字节一致）与 `服务端源码/`（4 → **5** 文件，新增 `migration_relation_lover.sql`）、新建 **`版本存档/V3-意见反馈/归档说明.md`**、追加对话记录、**订正 `index.html` MD5**。详见下文「第 26 次讨论」一节。
 
 ## 视觉规范（当前在线版本 · 黄白杂志风）
 
@@ -98,9 +100,9 @@ metadata:
 - **第 18 次收尾 · 用户确认后的废图清理（已完成）**：用户在多选里只勾了「删 `assets/images` 两张废图」。做法：写 `.deepworks/tmp/remove_unused_images18.ps1`（纯 ASCII、CJK 用 `[char]0x…`），把三处**当前版本**副本（项目根 `assets/images/`、`outputs/源码/assets/images/`、`版本存档/V2-黄白杂志风/备份/assets/images/`）里的 `dual-campus-cover.jpg`(149,176) 与 `dual-degree-framework.jpg`(96,565) 共 6 个文件**移动到** `.deepworks/tmp/removed_images18/{root,outputs-src,archive-bak}/`（沿用第 15 次「移动而不是硬删」的习惯，可随时取回），三处各只剩 `sample-avatar.svg`。**注意：`版本存档/V2-浅色新风/备份/`、`V2-深色科技风/备份/` 和 `首页替换前快照/` 里的同名图必须保留** —— 那几版的 `index.html` 仍引用它们（grep 实测各 2 处引用），删了会破坏历史存档的自包含性。清理后计数：备份 18 → **16**、`outputs/源码` 16 → **14**；`verify18.ps1` 复跑仍 **FAILURES: 0**；版面探针 @1440×4403 复测 `errs:[]`、`scrollH 4403`、`gapUnderIdentity 0`、`reqs []`，与清理前逐项一致（单文件版内联图片本就是 0 张，无需重建）。
 - **第 18 次收尾 · V2 定稿 + 提交区截图三处对齐（已完成）**：用户指出「作业提交区的截图还没改，这个版本作为第二版的最终结果」。排查发现 `作业提交区/01-截图/` 那两张**已经是**终稿（MD5 `7116E353` / `5EBEEA4C`），但 `作业提交区/` **根目录下还留着两份第 15 次深色科技风时期的同名旧截图**（`第二版-桌面端截图.png` 1,041,346 字节 / `F75CB6EA`、`第二版-手机端截图.png` 689,048 字节 / `17B5516E`，时间戳 09-10），用户看到的是这两个。用 `.deepworks/tmp/sync_submission18.ps1` 覆盖为终稿并三处比对，**FAILURES: 0**。同时把 `README.md` 改为「第二版（V2）已定稿——当前在线版本即第二版最终结果」（6,313 字节 / `4A0C2BB6`，已用 `sync_readme18.ps1` 同步到 `版本存档/V2-黄白杂志风/备份/`；`verify18.ps1` 复跑仍 **FAILURES: 0**，backup 16 / source 14 / submission shots 4 / 单文件 94,843）。**待用户拍板**：`作业提交区/` 根目录下这两份重复截图是否删掉（`01-截图/` 才是规范位置）；注意 `outputs/源码/` 里**没有** `README.md`（`verify18.ps1` 只比对根与备份两处）。
 
-## 第三版（V3）进行中 · 意见反馈
+## 第三版（V3）已定稿并归档 · 意见反馈
 
-> 第 19–22 次讨论。**第三版（V3）已定稿（截图 / 交付 / 归档 / 交付物全部就位），只剩「上线」一步**：Supabase 建表 + anon key + GitHub Pages。本地预览命令见下。
+> 第 19–26 次讨论。**第三版（V3）已完成：Supabase 线上存储已接入、GitHub Pages 已发布上线、截图 / 交付 / 归档 / 交付物全部就位，并于第 26 次完成最终归档**。本地预览命令见下。
 
 - **需求来源**：用户希望在主页上加「意见反馈」，但**反馈内容不能让其他人看到**（隐私优先），并希望作者本人能在一个**清晰的表格**里整理查看。
 - **方案定稿（第 19 次）**：① 官方**匿名反馈 + 本地管理后台**（自建，零依赖）；② 明确排除 **Google Sheets**（`script.google.com` 本机不通）与 **Cloudflare Workers**（需 node/wrangler，而本机 **node 缺失**）；③ 数据表用 `feedback`（原 `comments(nickname/body/page/is_hidden)` 方案作废）；④ 线上发布走 **Supabase PostgREST**，前端一行不改，只改配置。
@@ -125,7 +127,8 @@ metadata:
 
 - **⚠️⚠️ SQLite 迁移坑（第 21 次踩过）**：`ALTER TABLE ADD COLUMN` **不能带 CHECK 约束**，所以老库经自动补列后**缺少 `ck_feedback_relation` / `ck_feedback_device`**，与 `db/schema.sql` 不一致。一次性重建脚本：`.deepworks/tmp/rebuild_feedback_v3.py`（无参＝预演；`--apply` 才真改；先备份到 `.deepworks/tmp/feedback_backup_<时间戳>.db`，用临时库跑 `schema.sql` 取权威 DDL 后改名建新表 → 事务内搬运（**含 `id`**，保证编号不变）→ DROP → RENAME → 重跑 `schema.sql` 恢复索引与触发器 → 校验行数/列/integrity）。**已于第 21 次 `--apply` 成功**：4 行数据完好、`relation 约束 : True` / `device 约束 : True` / `integrity : ok`。修过两个 bug：①源列要取交集；②必须用 `conn.execute(rebuilt_ddl)` 而不是 `executescript`（后者会隐式提交、破坏事务）。
 - **后端接口（`server.py`，零第三方依赖）**：`POST /api/feedback`（字段校验 + 蜜罐 + 每 IP 10 分钟 5 条限流）、`GET /api/feedback` → **405 只写不读**、`GET /admin?token=…`（后台页）、`POST /api/admin`（改状态）、**`GET /export?token=…`（CSV 导出，无令牌 403）**；静态服务**拒绝** `/db/`、`/.deepworks/`、`/.opencode/`、`/.git/`、`/版本存档/`、`/作业提交区/`；启动参数 `--port(8000) --host(127.0.0.1) --db --token --open`。
-- **后台令牌**：存在 `db/admin_token.txt`（**必须 gitignore，绝不入库**）；当前值 `_sG-4x4NmiM2KPbl`，后台地址 `http://127.0.0.1:8000/admin?token=_sG-4x4NmiM2KPbl`。
+- **后台令牌**：存在 `db/admin_token.txt`（**必须 gitignore，绝不入库，也绝不写进本记忆文件**）；**令牌值一律不记录**，后台地址 `http://127.0.0.1:8000/admin?token=<见 db/admin_token.txt>`。
+  - **⛔ 第 26 次教训（已修复）**：本记忆文件此前把令牌明文写了进去，而它**被 git 跟踪并推送到了公开仓库** → `raw.githubusercontent.com/.../.opencode/skills/project-memory/SKILL.md` 任何人可直接读到（实测命中 4 处）。处置：① 全文脱敏并推送；② **本地令牌已轮换**（删除 `db/admin_token.txt`，`server.py` 的 `load_token()` 会在重启时重新生成），**老令牌作废**；③ 规则升级：**任何入库文件（含 `.opencode/`）都不得出现令牌明文**，只记录「令牌在 `db/admin_token.txt`」这个指针。注意 git 历史里仍留有旧值（未做历史重写），**所以轮换才是真正的止损手段**。
 - **数据表约束**：`STATUSES=("new","read","resolved")`、`STATUS_LABELS={new:未读, read:已读, resolved:已解决}`、`CATEGORY_LABELS={bug:问题反馈, suggestion:功能建议, content:内容意见, other:其他}`（**第 21 次核对：`server.py` 与 `index.html` 都用「内容意见」，两者一致；早期记的「内容补充」是错的**）；**第 21 次新增两个枚举**：`RELATIONS=("classmate","friend","family","teacher","lover","other")` → 同学/朋友/家人/老师/恋人/其他（**第 25 次讨论：原 `online`/网友 已移除，改为 `lover`/恋人，前端 `index.html`、后端 `server.py`、`db/schema.sql`、`db/supabase_feedback.sql` 四处＋线上 `ck_feedback_relation` 约束必须同步**），`DEVICES=("phone","tablet","computer","other")` → 手机/平板/电脑/其他设备（分别对应 `RELATION_LABELS` / `DEVICE_LABELS`，可留空＝`None`）；限长 `MAX_MESSAGE=1000 / MAX_NAME=60 / MAX_CONTACT=120 / MAX_URL=300 / MAX_LABEL=20`。
 - **验证（第 20 次，三层全绿）**：接口自测 `.deepworks/tmp/probe_api.py` → **45/45 通过**（含「GET /api/feedback 必须 405 且文案含『不提供读取』」「无令牌 `/export` 必须 403」「带令牌 `/export` 正文须以『编号,提交时间』开头」等断言）；前端结构检查 `.deepworks/tmp/verify_feedback2.py` → **41/41 通过**（含「已移除留言墙」「CSS 无 `.fb-wall`/`.fb-item`/`.fb-chip` 残留」「`.fb-side` 在位」「`feedback.js` 无 `innerHTML`/无列表逻辑」）；整页与后台截图经视觉确认渲染正常（后台可见 5 列表格 + 统计卡；访客区可见表单 + 隐私卡，无留言墙）。
 - **关键文件（第 21 次改动后实测，旧值见下）**：`index.html` **37,064 字节 / `387BB371DCE5A5D3510F343425DAA19A`**；`js/feedback.js` **8,022 字节 / `C5EA80FEF74CA6E1832D0DBE1C3E14A9`**；`server.py` **30,558 字节 / `F725BD4F41C25780AD2F1830E2F815C0`**；`db/schema.sql` **4,181 字节 / `B1325996A0BBDF7E2A4F34683E83DCF4`**（**已整文件重写**：新增 `relation`/`device` 列 + `ck_feedback_relation`/`ck_feedback_device`）；`db/supabase_feedback.sql` **10,549 字节 / `2E77CEB351873B47BD011B2D4388E9BE`**（**⛔⛔ 第 22 次踩坑结论（最终，两次实测）：Supabase SQL Editor 完全无法执行 `CREATE FUNCTION` / `CREATE TRIGGER` —— 一律报 `ERROR: 42601: syntax error at or near "returns"`（`LINE 45: returns trigger`）：① `$$ … $$` 美元引用包裹函数体 → 报错；② 改用单引号包裹 `as 'begin … end'` → **仍然报错**。它会把这类语句切错位置再发送，与函数体写法无关。→ 最终处置：**把函数 + 触发器整段注释掉（默认关闭）**，并注明「想要 `updated_at` 自动更新就单独新开一个 query 只跑那 9 行」；脚本由此变成 **66 行纯净可粘贴版**（已核对零 `CREATE FUNCTION/TRIGGER` 命中），表结构 / 注释 / 索引 / RLS / grant / 自检全部不受影响。**③ 第 3 次实测又踩一坑：粘贴时 `now()` 的括号丢了（编辑器收到的是 `default now,`），报 `ERROR: 0A000: cannot use column reference in DEFAULT expression`（`LINE 13: created_at timestamptz not null default now,`）→ 已把 `created_at` / `updated_at` 两处默认值改成**关键字 `current_timestamp`**（标准 SQL，不带括号，复制过程不可能再丢）**）（**第 22 次最后加了一段 4.5 防御性授权** `grant usage on schema public to anon;` + `grant insert on table public.feedback to anon;` —— 部分 Supabase 新项目不再自动给 `public` 架构的表级权限，缺了会报 `42501 permission denied for table feedback`；**只授 insert、不授 select/update/delete**。全文＝新列 + 约束 + `comment on column` + 2 索引 + 触发器 + RLS 仅 `anon` INSERT + **4.5 表级 grant** + **老表补列段** + 自检 select，期望 `table_ok=1, five_fields_ok=5, index_count=3, policy_count=1, rls_enabled=true`；归档副本已同步同 MD5）；`db/init_db.py` **9,292 字节 / `7AE3F0D7BB44E987663D6EC92D645C35`**（含 `migrate()` + 新枚举自检用例）；`db/feedback.db` **32,768 字节 / `E27D7701D42B76B294EEFC9CD275132F`**（5 行、13 列、约束已补齐）。**未改动**：`css/main.css` 34,824 / `3A7A20FD662F30514AF0A00AC9961955`、`js/feedback-config.js` 1,592 / `48068D229175C16CD3E7ECE50E0D3A22`、`README.md` 6,782 / `2114B140F7B4977F6C9F9AD37D6B3352`、`js/main.js` 13,984 / `BBD298E33BAB6AC5A00330EBF93B0A85`、`js/go-board.js` 16,670 / `CEDCC0A97CAF625CFA379980EFBD26FC`。（**第 20 次旧值**：`index.html` 35,805 / `C0F2B27BE277BA87FD7685BBFA606944`；`js/feedback.js` 7,215 / `6AF42FF5556CABE7C7486CFFFC9161F4`；`server.py` 24,945 / `3B16E865812E0EBEC9FD4F5BE5405B46`；`db/supabase_feedback.sql` 6,209 / `6CAD523739711DD23C78C899AA7F8A22`。）
@@ -133,7 +136,7 @@ metadata:
 - **⚠️ 跑探针前先重启 8000 服务**：限流是**每 IP 10 分钟 5 条**且存在内存里，探针会消耗额度（`probe_api.py` 自己就会造自测行）；**重启即清零**。（第 21 次实测：探针跑完库里留下 `#1/#3/#5/#6` 四条「【自测】自测同学」，用户真实那条是 `#2`「可以可以」。）
 
 - **Supabase / GitHub 现状（第 21 次，用户已自行注册，截图确认）**：Supabase 组织 `Qilumanman's Org`（FREE），项目 `Qilumanman's Project`，**URL `https://knvgdbyzckdoiukafsrh.supabase.co`**，Health / NANO / Singapore `ap-southeast-1`；**No migrations / No backups / GitHub: No repository connected → 库里还没有任何表**，需要用户把 `db/supabase_feedback.sql` 粘到 **SQL Editor** 执行（建表 + RLS + 自检查询）。GitHub 账号 **`Qilumanman`**，Projects 看板 `@Qilumanman的无题项目`（空），**仓库未建**；本机 **`gh` CLI 未安装**（`winget` 可用）。**`anon public` key 是公开密钥，写进 `js/feedback-config.js` 是设计如此（RLS 只允许 INSERT、禁止 SELECT，所以公开无风险）；但 `service_role` key 绝不能进仓库。**
-- **待办（第 22 次定稿后，只剩「上线」这一步）**：① **等用户粘贴 Supabase `anon public` key**（用户已选「我现在粘贴给你」但还没贴）→ 把 `js/feedback-config.js` 的 `mode` 从 `"local"` 切成 `"supabase"` 并填 `supabaseUrl` / `supabaseAnonKey`，线上实测一条；② **等用户在 Supabase SQL Editor 执行 `db/supabase_feedback.sql`**（当前库里还没有表；执行成功判据＝自检行 `table_ok=1 / five_fields_ok=5 / index_count=3 / policy_count=1 / rls_enabled=true`；⚠️ 脚本里**不能出现 `CREATE FUNCTION` / `CREATE TRIGGER`**（编辑器会切错位置、必报 42601 `syntax error at or near "returns"`，换写法也无效），已整段注释掉）；③ **GitHub Pages 发布**：仓库名已定 **`Qilumanman.github.io`**（上线地址 `https://qilumanman.github.io/`），需 `git init` + `.gitignore` 排除 `版本存档/`、`作业提交区/`、`.deepworks/`、`db/*.db`、`db/admin_token.txt`、`__pycache__/`；本机 `gh` 未安装，需用户授权 `winget install GitHub.cli` 或给 PAT；④ **待用户确认删除**：项目根那个**空的乱码目录**（0 子项，09-17 18:34 创建）与 `作业提交区/` 根目录的重复截图（`v18_desktop.png` 及第二版两份，规范位置只在 `01-截图/`）。
+- **⚠️ 历史待办（第 22 次时点的记录；第 23–25 次已全部完成 —— Supabase 密钥已接入、SQL 已执行、Pages 已发布上线；以下保留供溯源）**：① **等用户粘贴 Supabase `anon public` key**（用户已选「我现在粘贴给你」但还没贴）→ 把 `js/feedback-config.js` 的 `mode` 从 `"local"` 切成 `"supabase"` 并填 `supabaseUrl` / `supabaseAnonKey`，线上实测一条；② **等用户在 Supabase SQL Editor 执行 `db/supabase_feedback.sql`**（当前库里还没有表；执行成功判据＝自检行 `table_ok=1 / five_fields_ok=5 / index_count=3 / policy_count=1 / rls_enabled=true`；⚠️ 脚本里**不能出现 `CREATE FUNCTION` / `CREATE TRIGGER`**（编辑器会切错位置、必报 42601 `syntax error at or near "returns"`，换写法也无效），已整段注释掉）；③ **GitHub Pages 发布**：仓库名已定 **`Qilumanman.github.io`**（上线地址 `https://qilumanman.github.io/`），需 `git init` + `.gitignore` 排除 `版本存档/`、`作业提交区/`、`.deepworks/`、`db/*.db`、`db/admin_token.txt`、`__pycache__/`；本机 `gh` 未安装，需用户授权 `winget install GitHub.cli` 或给 PAT；④ **待用户确认删除**：项目根那个**空的乱码目录**（0 子项，09-17 18:34 创建）与 `作业提交区/` 根目录的重复截图（`v18_desktop.png` 及第二版两份，规范位置只在 `01-截图/`）。
 ## 项目目录结构
 
 ```
@@ -198,8 +201,8 @@ deepworks个人主页/
 
 - **启动**（项目根，零第三方依赖）：`python server.py --port 8000`；日志建议重定向到 `.deepworks/tmp/server.log` / `.err`。
 - **访客预览**：`http://127.0.0.1:8000/` → 页面底部「05 / 意见反馈」（表单 + 隐私说明卡）。
-- **作者后台**：`http://127.0.0.1:8000/admin?token=_sG-4x4NmiM2KPbl`（令牌明文在 `db/admin_token.txt`；**该文件与 `db/feedback.db` 都必须 gitignore**）。
-- **CSV 导出**：`http://127.0.0.1:8000/export?token=_sG-4x4NmiM2KPbl`（无令牌 → 403）。
+- **作者后台**：`http://127.0.0.1:8000/admin?token=<见 db/admin_token.txt>`（令牌明文在 `db/admin_token.txt`；**该文件与 `db/feedback.db` 都必须 gitignore**；令牌值不要抄进任何入库文件）。
+- **CSV 导出**：`http://127.0.0.1:8000/export?token=<见 db/admin_token.txt>`（无令牌 → 403）。
 - **重启（改完 `server.py` 必须重启，否则跑的还是旧代码）**：`Get-NetTCPConnection -LocalPort 8000 -State Listen` 查 PID → `Stop-Process -Id <PID>` → 重新 `Start-Process`；确认方式：`GET /api/feedback` 应回 405，且后台应含「导出 CSV」。
 - **自测脚本**：`.deepworks/tmp/probe_api.py`（接口 45 项）与 `.deepworks/tmp/verify_feedback2.py`（前端结构 41 项），改完反馈相关代码后复跑这两个。
 - **版面探针（第 20 次新增，可复用）**：`.deepworks/tmp/run_probe_http_v3.ps1` —— 把**当前** `index.html` 复制成根目录的 `__probe_v3.html`（注入 `.deepworks/tmp/probe_v3.js`）后**用 HTTP 打开**（`http://127.0.0.1:8000/__probe_v3.html`），用 `--headless=old --dump-dom` 把 `RESULT::{...}` 从 `<title>` 读回。**要点：一定要走 HTTP，不要用 `file://` + `<base href>` 的拷贝页** —— 第 20 次实测那种方式 CSS 会加载失败（探针读到 `body` 默认 8px 边距、页高 19967px 的假数据）。
@@ -316,12 +319,53 @@ $line = 'cmd.exe /c python "' + $srv + '" --port 8000 >> "' + $log + '" 2>> "' +
   5. 线上已存在的库：**check 约束不能就地改**，必须 drop + add（见下）
 - **约束名是显式的 `ck_feedback_relation`**，不是 Postgres 自动命名的 `feedback_relation_check`（这是本轮能一次改对的关键）。
 - 线上迁移脚本已新增：**`db/migration_relation_lover.sql`**（Supabase SQL Editor 直接跑）＝ `update ... set relation='other' where relation='online'` 兜底老数据 → `drop constraint if exists ck_feedback_relation` → `add constraint ... ('classmate','friend','family','teacher','lover','other')` → 更新 comment → `select pg_get_constraintdef` 自检。
-  - ⚠️ **用户尚未执行该脚本**：不执行的话，线上页面已经能选「恋人」，但提交会被 PostgREST 以 check 约束拒绝（400）。这是本轮遗留的唯一手动步骤。
+  - ✅ **用户已在 Supabase SQL Editor 执行该脚本，线上约束已迁移完成**（SQL Editor 只回显「Success. No rows returned」，因为末尾那条自检 select 没一起跑，**这不代表失败**）。
+  - **线上实测证据**（`.deepworks/tmp/probe_live_lover.py`，用与网页一致的公开 anon 密钥走真实访客链路）：`relation=lover` → **HTTP 201**（能存下「恋人」）；`relation=online` → **HTTP 400 `23514 ... violates check constraint "ck_feedback_relation"`**（证明库里的约束已是包含 lover 的新版，且约束名确实叫 `ck_feedback_relation`）；`GET /rest/v1/feedback`（匿名）→ **HTTP 401 `42501 permission denied`**（只写不读仍然成立）。
+  - ⚠️ 判断「线上数据库改动是否生效」的通用做法：**不要看 SQL Editor 的 "Success. No rows returned"，要用公开密钥打一次真实的 insert 探针**（能 201 就是生效），再用旧值打一次（应 400）反向确认。
 - **SQLite 无法 ALTER CHECK 约束** → 本地 `db/feedback.db` 用「重建表」方式迁移：备份 → 读出全部行 → `drop table feedback` → `executescript(db/schema.sql)`（顺带重建 2 个索引 + updated_at 触发器）→ 按原 id 回插 → 修 `sqlite_sequence` → 探针验证。脚本 `.deepworks/tmp/migrate_local_db.py`，备份 `.deepworks/tmp/feedback_backup_before_lover_20260917-223326.db`。迁移后本地仍是 1 行（id=2「可以可以」，relation 为 NULL）。
 - 本地端到端实测脚本 `.deepworks/tmp/probe_lover.py`（**先重启 8000 加载新 `server.py` 并清限流**）：`relation=lover` → **201 `{"ok": true, "id": 6}`**；`relation=online` → **400 `{"ok": false, "error": "「与主页主人的关系」取值不合法。"}`**；`/admin` 页面含「恋人」、**不含**「网友」；classmate/friend/family 均 201；探针行已全部 `action=delete` 清掉。
 - 限流再次复现：连打第 4、5 条时命中 `RATE_MAX=5 / RATE_WINDOW=600` → **HTTP 429**，**属于正常保护而不是代码错误**；验证脚本要分批或重启服务。
 - 交付物已重建：`outputs/源码/`（19 文件，index.html 含 lover 无 online）+ 单文件版 **112,775 B / MD5 `3D40E14F96E35D987210786C2815E566`**，`remaining local refs 0` / `cdn refs 0`。
-- **故意不改**：`版本存档/V3-意见反馈/`（V3 交付时的历史快照，里面仍是「网友」）、`作业提交区/01-截图/`（已交付的旧截图）。这是「历史快照不追改」原则的延续。
+- ~~**故意不改**：`版本存档/V3-意见反馈/`（V3 交付时的历史快照，里面仍是「网友」）、`作业提交区/01-截图/`（已交付的旧截图）~~ → **⛔ 已在第 26 次被用户推翻并更新**：用户要求「当作第三版最终形态保存」，故 `版本存档/V3-意见反馈/` 与新截图**已刷新为「恋人」版最终形态**（旧版整体备份在 `.deepworks/tmp/backup_before_v3_final_20260917-2310/`，可回滚）。**「历史快照不追改」原则仍适用于 V1 / V2 存档与更早的交付截图**（那些不动）。
+
+## 第 26 次讨论：第三版最终形态定稿归档（2026-09-17）
+
+- **用户指令**：把当前状态**当作第三版最终形态保存** —— 重拍截图、刷新版本存档与提交区、追加对话记录。
+- **归档落点**：`版本存档/V3-意见反馈/` = `备份/`（21 文件）+ `服务端源码/`（5 文件）+ `完整截图/`（4 张）+ **`归档说明.md`（本轮新建，含逐文件 MD5 清单 / 截图规格 / 取图方式 / 核验结论 / 遗留事项）**；交付截图同写入 `作业提交区/01-截图/第三版-*.png`。
+
+### 一、⭐ 截图流水线新知识（本轮踩全了，务必照抄）
+
+1. **⛔ 不要从线上一页抓整页图**：`--virtual-time-budget=9000` 抓 `https://qilumanman.github.io/` 会得到 **1440×5548 但只有约 60 KB** 的图（Tailwind Play JS 还没跑完 → 页面没上样式）。**整页截图一律走本地镜像 `http://127.0.0.1:8000/`**，`--virtual-time-budget=15000` → 稳定得到 ~1.6 MB 正常图。本地与线上 `index.html`/`css`/`js` 已逐字节一致，截图等价。
+2. **⚠️ Edge 写 PNG 是异步的**：`Start-Process -Wait` 返回（进程已退出）时文件**可能还没落盘**；固定 `Start-Sleep` 太短会误报失败。**正确姿势：轮询等「文件存在且大小连续两次相同」再收图**（脚本 `.deepworks/tmp/shot_final2.ps1`）。
+3. **反馈区裁切 y=4250（不是 4278）**：用整页图与旧归档图做**模板匹配**定出真实偏移（99.3% 一致）；按 4278 裁会与归档有 48% 像素不同。
+4. **逐像素核验结论**：① 同一页面**两次独立抓拍逐像素完全相同**（渲染是确定的）；② 后台图与旧归档**逐字节相同**；③ 反馈区图仅 **998 px** 不同；④ 桌面整页仅 2 个动画块不同（首屏数字分身 y638..872 / 右下悬浮按钮 y5434..5540），手机仅 1 块（悬浮按钮）→ **差异 100% 来自动画相位（`--virtual-time-budget` 停在哪一帧），不是内容差异**。
+5. 工具：`.deepworks/tmp/crop_final.ps1`（裁图 + `DiffPng`）、`.deepworks/tmp/analyze.ps1`、`.deepworks/tmp/cluster.ps1`（`-A -B -Step -Label` 通用分块差异聚类）、`.deepworks/tmp/shot_final.ps1` / `shot_final2.ps1`（拍照 + 等文件稳定）。
+6. **⚠️ PowerShell 函数命名坑再现**：函数名 **`Diff` 撞别名 `diff`（=Compare-Object）** → 必须改名（本轮改成 `DiffPng`）。同类：`CP`、`%`、`?`、`where`、`sc`、`curl`。
+
+### 二、定稿快照（本轮实测，取代第 21/22 次的旧值）
+
+- **`index.html` = 37,063 字节 / `5E9FC5B595393F968678FBF8925FC88A`**（**订正**：第 21/22 次记的 `387BB371DCE5A5D3510F343425DAA19A` / 37,064 是更早的值；另有 `5E9FC595393F968678FBF8925FC88A` 是**漏抄一位的错误值**，正确为 `5E9FC5B595393F968678FBF8925FC88A`）。
+- 其他前端：`README.md` 9,930 / `66BC9DB59D860114412A2C55A8F1F050`；`css/main.css` 34,824 / `3A7A20FD662F30514AF0A00AC9961955`；`js/main.js` 13,984 / `BBD298E33BAB6AC5A00330EBF93B0A85`；`js/feedback.js` **8,444 / `ACB8C88642B6D477F1703185A0A0CEB3`**（第 23–25 次后已变，旧值 8,022 / `C5EA80FE…`）；`js/feedback-config.js` **1,887 / `5734687671542B43E7031C10AE57475D`**（线上模式，含公开 anon 密钥；旧值 1,592 / `48068D22…`）；`js/go-board.js` 16,670 / `CEDCC0A97CAF625CFA379980EFBD26FC`；`pages/` 3 个 2,846 / 2,782 / 2,780。
+- 服务端：`server.py` 30,556 / `E1CDA08F5A72816AE241FECE25B96BDA`；`db/schema.sql` 4,180 / `7176B40E5A9ED8F42CDB0E78CCD98CCB`；`db/supabase_feedback.sql` **10,727** / `A0C48A909E78A28256FAB826EADBFEB5`；`db/init_db.py` 9,292 / `7AE3F0D7BB44E987663D6EC92D645C35`；`db/migration_relation_lover.sql` 1,703 / `77CE2256D6959AB7F727317B70552FFD`。
+- **定稿截图 4 张**（新 MD5，`作业提交区/01-截图/第三版-*.png` 与归档 `完整截图/` **完全一致**）：桌面 1440×5548 / 1,613,591 / `36938E03F58322A101EB9046ADAEDE85`；手机 504×6452 / 889,313 / `B8ECE686733705380E505A63040B9E50`；反馈区 1440×1210 / 345,300 / `C7EBDE0C3DAE41E451233FBEEB0EDAF7`；后台 1280×400 / 25,489 / `E98C170EACF1230843B29994422763BB`（后台图与旧值**逐字节相同**，说明该页无动画）。
+- 交付物：`outputs/源码/` 19 文件（**无 `server.py`**，是纯前端快照）；`outputs/棋路漫漫-个人主页-单文件版.html` 112,775 / `3D40E14F96E35D987210786C2815E566`。
+
+### 三、归档刷新与回滚点
+
+- `备份/` **21/21 与仓库根逐字节一致**（本轮变化：`index.html` 37,064 → 37,063；`README.md` 9,417 → 9,930）。
+- `服务端源码/` **4 → 5 文件**：`init_db.py` 9,292 / `schema.sql` 4,180 / `server.py` 30,556 / `supabase_feedback.sql` 10,727 / **新增 `migration_relation_lover.sql` 1,703**（MD5 全部与源文件一致，`*.db` 与 `admin_token.txt` 仍然刻意不含）。
+- **旧版整体备份（回滚点）**：`.deepworks/tmp/backup_before_v3_final_20260917-2310/`（**38 文件 / 9,391,786 字节**：旧 `V3-意见反馈/`、旧 `01-截图/`、旧 `对话记录.md`）。
+- 残留复核：归档内**无「网友/online」残留**（只有 `migration_relation_lover.sql` 与 `supabase_feedback.sql` 注释里**有意保留**的迁移说明）；`index.html` 内 `<option value="lover">恋人</option>` ✓。
+
+### 四、README 的决定
+
+- **本轮不改 `README.md` 文案**（不加「第三版已定稿」字样），以保持**本地与线上 README 完全一致**（均为 9,930 字节 / `66BC9DB59D860114412A2C55A8F1F050`）；归档已按当前 README 同步。若日后要加定稿字样，需**一并推送**才不让线上落后。
+
+### 五、遗留（需用户手动 / 拍板）
+
+- Supabase 线上表仍有 **2 条测试行**待手动删除（anon 无 delete 权限）：`[lover-check]`（第 25 次探针）与 `【联通测试】…`（更早探针）——
+  `delete from public.feedback where name = '[lover-check]' or message like '【联通测试】%';`
+- 清理类待拍板项（沿用旧账）：`作业提交区/` 根目录重复截图与 `v18_desktop.png`、`outputs/预览/` 旧预览图、已休眠的灯箱代码、`pages/` 三个二级页面是否统一成黄白杂志风。**删除类操作一律先经用户确认。**
 
 ## 新对话启动流程
 
