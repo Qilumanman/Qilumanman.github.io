@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "workspace": {
+    "name": "deepworks个人主页",
+    "createdAt": 1788428568050,
+    "preset": "starter"
+  },
+  "authorizedRoots": [
+    "C:\\Users\\ASUS\\Desktop\\deepworks个人主页"
+  ],
+  "reload": null
+}
