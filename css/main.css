@@ -339,12 +339,17 @@ svg {
   flex: none;
   border-radius: 50%;
   overflow: hidden;
-  box-shadow: 0 8px 18px -10px rgba(184, 121, 26, 0.7);
+  background: radial-gradient(circle at 34% 26%, #FFF8E4 0%, #F8DC94 45%, #D9A02B 100%);
+  box-shadow: 0 8px 18px -10px rgba(184, 121, 26, 0.7),
+              inset 0 0 0 1px rgba(178, 120, 20, 0.18);
 }
 
-.brand-orb svg {
+.brand-pic {
   width: 100%;
   height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: 50% 14%;
 }
 
 .brand-text {
@@ -389,7 +394,8 @@ svg {
 /* ---------- 6. Hero ---------- */
 .hero2 {
   padding-top: 74px;
-  padding-bottom: 26px;
+  /* 首屏留出高度给竖版插画：图是 0.45 宽高比，框越高整幅图越大 */
+  padding-bottom: clamp(30px, 26vh, 260px);
   text-align: center;
 }
 
@@ -450,6 +456,114 @@ svg {
   color: var(--text-faint);
 }
 
+/* ---------- 6b. 背景大图（素材由本人提供：低透明度融进纸面，不单独成块） ---------- */
+.sec-bg {
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
+}
+
+.sec-bg img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  mix-blend-mode: multiply;
+  filter: saturate(0.95);
+  -webkit-mask-image: radial-gradient(122% 96% at 50% 44%, #000 0%, rgba(0, 0, 0, 0.9) 58%, rgba(0, 0, 0, 0) 96%);
+  mask-image: radial-gradient(122% 96% at 50% 44%, #000 0%, rgba(0, 0, 0, 0.9) 58%, rgba(0, 0, 0, 0) 96%);
+}
+
+.hero2 {
+  position: relative;
+  overflow-x: clip;
+}
+
+.cta-inner {
+  position: relative;
+  overflow: hidden;
+}
+
+.hero2 > *:not(.sec-bg),
+.cta-inner > *:not(.sec-bg) {
+  position: relative;
+  z-index: 1;
+}
+
+/* 首屏文字压在插画背景上：给文字一层纸色柔光托底（不遮挡插画，只托住笔画） */
+.hero2 .hero-title,
+.hero2 .hero-sub,
+.hero2 .hero-desc,
+.hero2 .hero-tags {
+  text-shadow: 0 1px 14px rgba(253, 251, 244, 0.95), 0 0 3px rgba(253, 251, 244, 0.85);
+}
+
+/* 首屏：铺满整个横行。插画原图 841x1870 是竖版海报，用 contain 只会渲染成
+   中间一条 290x645 的竖图、左右露出纸色（看着空档），所以改用 cover 取中段横构图；
+   遮罩也从径向（会把左右边淡成空档）换成只淡出上下边、左右保持实边。 */
+.sec-bg--hero {
+  inset: 0;
+}
+
+.sec-bg--hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("../assets/images/figures/april-violin-piano.webp");
+  background-size: cover;
+  background-position: 50% 34%;
+  background-repeat: no-repeat;
+  mix-blend-mode: multiply;
+  filter: blur(30px) saturate(1.06);
+  opacity: 0.4;
+}
+
+.sec-bg--hero img {
+  position: relative;
+  z-index: 1;
+  object-fit: cover;
+  object-position: 50% 46%;
+  /* 背景是次要的：浓度压到 0.25，保证压在它上面的文字看得清 */
+  opacity: 0.25;
+  -webkit-mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, #000 8%, #000 92%, rgba(0, 0, 0, 0) 100%);
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, #000 8%, #000 92%, rgba(0, 0, 0, 0) 100%);
+}
+
+/* 底部横幅：龙族那张横图做整幅底纹（横幅本身不被卡片遮挡，图完整可见） */
+.sec-bg--cta {
+  inset: 0;
+}
+
+.sec-bg--cta img {
+  object-position: 44% 42%;
+  opacity: 0.34;
+  filter: contrast(1.4) saturate(1.25) brightness(1.05);
+  -webkit-mask-image: radial-gradient(135% 128% at 52% 48%, #000 0%, rgba(0, 0, 0, 0.88) 52%, rgba(0, 0, 0, 0) 94%);
+  mask-image: radial-gradient(135% 128% at 52% 48%, #000 0%, rgba(0, 0, 0, 0.88) 52%, rgba(0, 0, 0, 0) 94%);
+}
+
+@media (max-width: 1024px) {
+  .sec-bg--hero img {
+    opacity: 0.24;
+  }
+
+  .sec-bg--cta img {
+    opacity: 0.3;
+  }
+}
+
+@media (max-width: 720px) {
+  .sec-bg--hero img {
+    opacity: 0.22;
+  }
+
+  .sec-bg--cta img {
+    opacity: 0.26;
+    object-position: 50% 40%;
+  }
+}
+
 /* ---------- 7. 数字分身形象区 ---------- */
 .mascot-wrap {
   padding-top: 34px;
@@ -478,8 +592,20 @@ svg {
   width: 232px;
   height: 248px;
   cursor: pointer;
-  animation: floaty 5.5s ease-in-out infinite;
   -webkit-tap-highlight-color: transparent;
+}
+
+/* 形象外壳：形象本体 + 「铁山靠」冲击环 */
+.avatar-fx-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 悬浮：形象轻轻上下浮动 */
+.avatar-float {
+  animation: floaty 5.5s ease-in-out infinite;
 }
 
 @keyframes floaty {
@@ -487,28 +613,24 @@ svg {
   50% { transform: translateY(-9px); }
 }
 
-/* 右臂：悬停 / 点按 → 挥手 */
-.arm-wave {
-  transform-box: view-box;
-  transform-origin: 152px 122px;
-}
-
-.avatar-svg:hover .arm-wave,
-.avatar-svg.is-waving .arm-wave {
-  animation: waveHand 0.72s ease-in-out 3;
-}
-
-@keyframes waveHand {
-  0%, 100% { transform: rotate(0deg); }
-  45% { transform: rotate(-40deg); }
-}
-
-/* 铁山靠：以双脚为轴的侧倾 + 前顶 */
+/* 打招呼：鼠标悬停 / 点按 → 以底边为轴轻摆三下 */
 .avatar-body {
   transform-box: view-box;
-  transform-origin: 110px 224px;
+  transform-origin: 110px 222px;
 }
 
+.avatar-svg:hover .avatar-body,
+.avatar-svg.is-waving .avatar-body {
+  animation: greetSway 0.78s ease-in-out 3;
+}
+
+@keyframes greetSway {
+  0%, 100% { transform: rotate(0deg); }
+  40% { transform: rotate(-4deg); }
+  72% { transform: rotate(2.4deg); }
+}
+
+/* 铁山靠：以底边为轴的侧倾 + 前顶（蓄力 → 两连靠 → 收势小跳） */
 .avatar-svg.is-dancing .avatar-body {
   animation: tieShanKao 2.2s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
 }
@@ -525,44 +647,42 @@ svg {
   100% { transform: translateX(0) rotate(0deg) translateY(0); }
 }
 
-/* 冲击特效：仅舞蹈时浮现 */
-.bump-fx {
+/* 「铁山靠」冲击环：仅舞蹈时浮现（CSS 绘制，替代原 SVG 特效） */
+.shock-ring {
+  position: absolute;
+  left: 12px;
+  top: 52%;
+  width: 42px;
+  height: 42px;
+  margin: -21px 0 0 -21px;
+  border-radius: 50%;
+  border: 2px solid rgba(233, 184, 75, 0.85);
   opacity: 0;
-  transition: opacity 0.2s ease;
+  pointer-events: none;
 }
 
-.avatar-svg.is-dancing .bump-fx {
-  opacity: 1;
+.avatar-svg.is-dancing ~ .shock-ring {
+  animation: shockRing 0.62s ease-out 2 both;
 }
 
-.avatar-svg.is-dancing .bump-ring {
-  animation: bumpRing 0.55s ease-out 2 both;
-  transform-box: view-box;
-  transform-origin: 40px 116px;
+.avatar-svg.is-dancing ~ .shock-ring-2 {
+  animation-delay: 0.3s;
 }
 
-.avatar-svg.is-dancing .bump-ring-2 {
-  animation-delay: 0.28s;
+@keyframes shockRing {
+  0% { transform: scale(0.35); opacity: 0.9; }
+  100% { transform: scale(2.2); opacity: 0; }
 }
 
-@keyframes bumpRing {
-  0% { transform: scale(0.4); opacity: 0.9; }
-  100% { transform: scale(2.1); opacity: 0; }
+/* 小圆像（对话头像 / 右下悬浮球）：放大一点、略微上移，让脸更清楚 */
+.avatar-pic {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 24%;
+  transform: scale(1.14);
+  transform-origin: 50% 28%;
 }
-
-.avatar-svg.is-dancing .bump-line {
-  animation: bumpLine 0.5s ease-out 2 both;
-}
-
-.avatar-svg.is-dancing .bump-line-2 { animation-delay: 0.12s; }
-.avatar-svg.is-dancing .bump-line-3 { animation-delay: 0.24s; }
-
-@keyframes bumpLine {
-  0% { opacity: 0; transform: translateX(6px); }
-  40% { opacity: 1; }
-  100% { opacity: 0; transform: translateX(-10px); }
-}
-
 .mascot-badge {
   display: inline-block;
   padding: 5px 14px;
@@ -740,15 +860,19 @@ svg {
 /* ---------- 9. 01 ABOUT ME ---------- */
 .about-grid {
   display: grid;
-  grid-template-columns: 1.32fr 1fr;
+  grid-template-columns: 1fr;
   gap: 20px;
-  align-items: start;
 }
 
+/* 身份卡＝通栏横幅：左=图标标题，中=自我介绍，右=贴边满高人像，下=落款线。
+   卡高完全由内容决定，不再被右列拉高 → 不存在「撑高后剩一大块空」 */
 .card-identity {
   padding: 26px;
-  /* 图文素材撤下后，身份卡比右列矮一截 → 让它撑满整行，保持两列齐平 */
-  align-self: stretch;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) clamp(190px, 24%, 270px);
+  grid-template-rows: auto auto;
+  column-gap: 28px;
+  overflow: hidden;
 }
 
 .card-head {
@@ -757,13 +881,63 @@ svg {
   gap: 14px;
 }
 
-.card-identity .card-text {
-  margin-top: 16px;
+.card-identity .card-head {
+  grid-column: 1;
+  grid-row: 1;
+  align-self: start;
 }
 
+.card-identity .card-title {
+  font-size: 21px;
+}
+
+.card-identity .card-text {
+  margin: 0;
+  grid-column: 2;
+  grid-row: 1;
+  font-size: 15px;
+  line-height: 1.9;
+}
+
+/* 学校那行：细分隔线 + 更淡的小字，作为这张卡的落款 */
+.card-identity .card-note {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  grid-column: 1 / span 2;
+  grid-row: 2;
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--text-soft);
+}
+
+/* 身份卡右缘的竖版人像：出血到卡片边缘、纵向铺满整条横幅 */
+.card-identity .id-portrait {
+  grid-column: 3;
+  grid-row: 1 / -1;
+  position: relative;
+  margin: -26px -26px -26px 0;
+  min-height: 170px;
+  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+  overflow: hidden;
+  background: var(--gold-soft);
+}
+
+/* 绝对定位：图片不参与栅格高度计算，卡高只由文字决定 */
+.card-identity .id-portrait img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 32%;
+}
+
+/* 三张小卡并排铺满整行（原来竖着堆成一列，把 01 区撑得又高又空） */
 .mini-stack {
   display: grid;
-  gap: 14px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
 }
 
 .mini-card {
@@ -796,63 +970,6 @@ svg {
   padding: 22px 20px;
 }
 
-.notes-grid .note-card:first-child {
-  grid-column: span 2;
-}
-
-.note-card-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.badge {
-  display: inline-block;
-  padding: 4px 11px;
-  border-radius: 999px;
-  background: rgba(116, 119, 47, 0.12);
-  color: #6f7a2e;
-  font-size: 12px;
-  font-weight: 700;
-}
-
-.badge-soft {
-  align-self: flex-start;
-  background: var(--gold-soft);
-  color: var(--gold);
-}
-
-.chart-svg {
-  width: 100%;
-  height: 132px;
-  margin-top: auto;
-}
-
-.chart-grid line {
-  stroke: var(--line);
-  stroke-width: 1;
-  stroke-dasharray: 4 6;
-}
-
-.chart-area {
-  stroke: none;
-}
-
-.chart-line {
-  fill: none;
-  stroke: var(--gold);
-  stroke-width: 3;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.chart-dot {
-  fill: #fff;
-  stroke: var(--gold);
-  stroke-width: 3;
-}
-
 .tag-mini-row {
   display: flex;
   flex-wrap: wrap;
@@ -868,48 +985,6 @@ svg {
   font-size: 12px;
   color: var(--text-soft);
   white-space: nowrap;
-}
-
-.dot-pattern {
-  display: grid;
-  grid-template-columns: repeat(3, 12px);
-  gap: 8px;
-  width: max-content;
-  padding: 12px;
-  border-radius: var(--radius-sm);
-  background: var(--surface-2);
-  border: 1px solid var(--line);
-}
-
-.dot-pattern span {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: linear-gradient(150deg, #f0cd80, #b8791a);
-  opacity: 0.85;
-}
-
-.dot-pattern span:nth-child(2n) {
-  opacity: 0.42;
-}
-
-.dot-pattern span:nth-child(3n) {
-  opacity: 0.62;
-}
-
-.aa-mark {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 62px;
-  height: 62px;
-  border-radius: var(--radius-sm);
-  background: linear-gradient(150deg, #faf1de, #ecdfc2);
-  border: 1px solid #e8dcbe;
-  font-size: 24px;
-  font-weight: 800;
-  color: var(--gold);
-  letter-spacing: -0.02em;
 }
 
 /* ---------- 11. 03 数字分身对话 ---------- */
@@ -934,10 +1009,11 @@ svg {
   flex: none;
   border-radius: 50%;
   overflow: hidden;
+  background: #FDF3DC;
   box-shadow: 0 8px 18px -12px rgba(184, 121, 26, 0.85);
 }
 
-.chat-avatar svg {
+.chat-avatar img {
   width: 100%;
   height: 100%;
 }
@@ -1207,6 +1283,13 @@ svg {
   padding: 0 var(--gutter);
 }
 
+/* 锚点修正：CTA 区（#contact）自身无上内边距，点击「联系我」跳转时
+   CTA 标题会被 69px 吸顶导航盖住 → 预留导航高度 + 呼吸余量 */
+.cta {
+  scroll-margin-top: 78px;
+}
+
+
 .cta-inner {
   max-width: var(--max-width);
   margin: 0 auto;
@@ -1283,6 +1366,27 @@ svg {
   color: var(--text-faint);
 }
 
+.footer-links {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.footer-links a {
+  font-size: 13px;
+  color: var(--text-soft);
+  text-decoration: none;
+  padding-bottom: 1px;
+  border-bottom: 1px solid transparent;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.footer-links a:hover {
+  color: var(--gold-deep);
+  border-bottom-color: var(--gold);
+}
+
 /* ---------- 16. 右下角悬浮数字分身 ---------- */
 .ai-fab {
   position: fixed;
@@ -1314,7 +1418,7 @@ svg {
   transform: scale(1.06);
 }
 
-.ai-fab-core svg {
+.ai-fab-core img {
   width: 100%;
   height: 100%;
 }
@@ -1372,16 +1476,46 @@ svg {
     grid-template-columns: 1fr;
   }
 
+  /* 窄屏：横幅内部改成「上=图标标题+自我介绍，下=落款，右=人像」 */
+  .card-identity {
+    grid-template-columns: minmax(0, 1fr) clamp(150px, 34%, 210px);
+    grid-template-rows: auto auto auto;
+    column-gap: 18px;
+    min-height: 208px;
+  }
+
+  .card-identity .card-head {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .card-identity .card-text {
+    grid-column: 1;
+    grid-row: 2;
+    margin-top: 10px;
+  }
+
+  .card-identity .card-note {
+    grid-column: 1 / -1;
+    grid-row: 3;
+  }
+
+  .card-identity .id-portrait {
+    grid-column: 2;
+    grid-row: 1 / -1;
+  }
+
+  /* 小卡在窄屏回到竖排 */
+  .mini-stack {
+    grid-template-columns: 1fr;
+  }
+
   .notes-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 
   .hobby-grid {
     grid-template-columns: 1fr;
-  }
-
-  .notes-grid .note-card:first-child {
-    grid-column: span 2;
   }
 }
 
@@ -1434,10 +1568,6 @@ svg {
     grid-template-columns: 1fr;
   }
 
-  .notes-grid .note-card:first-child {
-    grid-column: auto;
-  }
-
   .note-card {
     min-height: 0;
   }
@@ -1478,6 +1608,28 @@ svg {
 
   .ai-fab-label {
     display: none;
+  }
+
+  /* 手机端可读性：输入控件字号见文末第 20 节（须置于末尾才能覆盖同优先级规则） */
+
+  /* 手机端点按目标：补足到 44px 建议高度（不含页头，页头高度须保持 69px） */
+  .chip,
+  .mail-row .btn-sm,
+  .footer-links a,
+  .fb-side-foot a {
+    min-height: 44px;
+  }
+
+  .footer-links a,
+  .fb-side-foot a {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  /* 锚点修正（手机端）：本断点下 .section 上内边距 56px < 吸顶导航 69px，
+     跳转落点会被导航盖住 → 预留 20px，使内容顶落在 76px 处 */
+  .section {
+    scroll-margin-top: 20px;
   }
 }
 
@@ -1906,5 +2058,17 @@ svg {
 
   .fb-actions {
     gap: 10px;
+  }
+}
+
+/* ---------- 20. 手机端可读性收尾（置于末尾以确保覆盖同优先级规则） ---------- */
+@media (max-width: 720px) {
+  /* iOS 在输入控件字号 <16px 时会在聚焦瞬间自动放大整页，导致「必须手动缩放」 */
+  .chat-input,
+  .fb-input,
+  .fb-select,
+  .fb-textarea,
+  .fb-honeypot input {
+    font-size: 16px;
   }
 }

@@ -5,8 +5,8 @@
    · 访客无需注册、无需登录即可提交反馈
    · 页面【只写不读】：前端没有任何读取他人反馈的接口调用，
      反馈内容只进后台，公开页面上不会显示任何人的留言
-   · 数据通道两选一（见 js/feedback-config.js）：
-       local    → 本机接口 POST /api/feedback（python server.py 提供，落 db/feedback.db）
+   · 数据通道**按运行环境自动识别**（见 js/feedback-config.js 的 pickMode()）：
+       local    → 本机接口 POST /api/feedback（python server.py 提供，数据落本机 SQLite）
        supabase → 线上 Supabase REST（发布后用；RLS 策略为匿名只可 insert、不可 select）
    · 访客要填的 5 项（第 5 项「提交时间」由后端自动生成，页面不设输入框）：
        ① 名字或昵称         -> name
