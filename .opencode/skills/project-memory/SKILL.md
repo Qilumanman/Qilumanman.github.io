@@ -69,7 +69,7 @@ metadata:
   - **🟡 第四版（V4）· 内容改写已落改（2026-09-27，第 29 次）**：三个文件（`index.html` / `css/main.css` / `js/main.js`）已完成**内容真实化改写**，页脚已改为「第四版」，自动化验证全绿（见「第 29 次讨论」）。
   - **🟢 第四版（V4）· 已定稿并完成收尾归档（2026-09-27，第 31 次 = 本文件对应讨论）**：新增**背景大图**（首屏 `.sec-bg--hero` 樱花插画 63.23% 可见 + 底部联系横幅 `.sec-bg--cta` 龙族截图底纹 73.71% 可见，两张均为用户自供素材），用户拍板「用自供龙族图 / 浓度保持 / 不再增加展示位」。收尾已完成：归档 `版本存档/V4-内容精简与背景大图/`（`备份/` 26 + `服务端源码/` 5 + `完整截图/` 2 + `归档说明.md`）、交付截图（桌面 1440×5323 / 手机 504×6555，同源覆盖提交区与预览，MD5 一致）、重建单文件版 **878,417 B / `F6FF4092D152B2568961C0576F7DF623`**、`outputs/源码/` 24 文件、`README.md` 改写、对话记录追加第 28–30 次。**V4 定稿指纹**：`index.html` **37,952 / `EA290675874B2FE435AE9B9DA0216C8C`**、`css/main.css` **35,145 / `05D49A80B5D91BEC27AE824051F1ED36`**；页高桌面 **5323** / 手机 **6555**。**唯一未做**：`git commit` / `push`（线上仍是第三版）。
 - **版本归属（第 19–20 次讨论更新）**：此前「不新建第三版、页脚保持第二版」的约定**已作废**。用户已确认**正式升为第三版**：页脚版本号、`README.md`、存档目录名、`作业提交区` 截图命名一并更新为第三版。
-  - **🟢 第五版（V5）· 已定稿并完成收尾归档（2026-10-02，第 32 次）**：本版 = **六项回归体检 + 修缺陷 + 图片优化**（文案与结构沿用 V4）。修掉 4 个真实缺陷：锚点被 69px 吸顶页头盖住（`.cta{scroll-margin-top:78px}`）、手机上锚点同样被盖（≤720 `.section{scroll-margin-top:20px}`）、手机点按区域 <44px（11 → 6 处）、**输入控件 <16px 的修复规则原本被后续媒体查询覆盖而失效**（规则移到样式表最末尾，8 → 0 处）。5 张位图转 WebP（988 KB → **254 KB / −74.3%**，首屏 1068.8 → **337.9 KB**；PSNR 36.6–48.5 dB、alpha 差 0.00）。反馈通道改为按域名自动识别（`window.pickFeedbackMode()`，单测 9/9）。页脚与二级页版本标记改「第五版」（`projects.html` 正文「第四版重点改的是内容」**有意保留** = 历史事实）。本地 `db/feedback.db` 删去 2 条测试行（仅剩 id=2）。归档 `版本存档/V5-回归修复与图片优化/`（`备份/` 29 + `服务端源码/` 5（与 V4 逐字节一致）+ `完整截图/` 2 + `原始位图/` 5 + `归档说明.md`）；截图（桌面 **1440×5391** / 手机 **390×7456**，与提交区、预览三处 MD5 一致）、重建单文件版 **791,188 B / `0370D3DD3D3F0855C5224356ED6FF498`**（与源页面逐像素差 0.22%，仅两处动效相位差；数字分身 4 问全对）、刷新 `outputs/源码/`（**27 站点文件** = 站点实际引用文件，不含仓库级 `README.md` / `opencode.jsonc`；+ 单文件版副本）、改写 `README.md`、新建 `outputs/第五版-内容改动清单.md`。**V5 定稿指纹**：`index.html` **25,975 / `A0BBA5E8F2A3A7363F6AD031E162B5BF`**、`css/main.css` **40,335 / `89B8743D2E6F19755CF5BE80704F9D42`**、`js/feedback-config.js` **3,593 / `97F87A1F5FC5C3A6E62671B58CE8BE49`**、`pages/about|blog|projects.html` 3,976 / 3,644 / 3,439；页高 1440→**5391**、1024→6039、720→6696、430→7150、390→**7456**、320→8297。**唯一未做**：`git commit` / `push`（线上仍是第三版）。详见「第 32 次讨论」。
+  - **🟢 第五版（V5）· 已定稿并完成收尾归档（2026-10-02，第 32 次）**：本版 = **六项回归体检 + 修缺陷 + 图片优化**（文案与结构沿用 V4）。修掉 4 个真实缺陷：锚点被 69px 吸顶页头盖住（`.cta{scroll-margin-top:78px}`）、手机上锚点同样被盖（≤720 `.section{scroll-margin-top:20px}`）、手机点按区域 <44px（11 → 6 处）、**输入控件 <16px 的修复规则原本被后续媒体查询覆盖而失效**（规则移到样式表最末尾，8 → 0 处）。5 张位图转 WebP（988 KB → **254 KB / −74.3%**，首屏 1068.8 → **337.9 KB**；PSNR 36.6–48.5 dB、alpha 差 0.00）。反馈通道改为按域名自动识别（`window.pickFeedbackMode()`，单测 9/9）。页脚与二级页版本标记改「第五版」（`projects.html` 正文「第四版重点改的是内容」**有意保留** = 历史事实）。本地 `db/feedback.db` 删去 2 条测试行（仅剩 id=2）。归档 `版本存档/V5-回归修复与图片优化/`（`备份/` 29 + `服务端源码/` 5（与 V4 逐字节一致）+ `完整截图/` 2 + `原始位图/` 5 + `归档说明.md`）；截图（桌面 **1440×5391** / 手机 **390×7456**，与提交区、预览三处 MD5 一致）、重建单文件版 **791,188 B / `0370D3DD3D3F0855C5224356ED6FF498`**（与源页面逐像素差 0.22%，仅两处动效相位差；数字分身 4 问全对）、刷新 `outputs/源码/`（**27 站点文件** = 站点实际引用文件，不含仓库级 `README.md` / `opencode.jsonc`；+ 单文件版副本）、改写 `README.md`、新建 `outputs/第五版-内容改动清单.md`。**V5 定稿指纹**：`index.html` **25,975 / `A0BBA5E8F2A3A7363F6AD031E162B5BF`**、`css/main.css` **40,335 / `89B8743D2E6F19755CF5BE80704F9D42`**、`js/feedback-config.js` **3,593 / `97F87A1F5FC5C3A6E62671B58CE8BE49`**、`pages/about|blog|projects.html` 3,976 / 3,644 / 3,439；页高 1440→**5391**、1024→6039、720→6696、430→7150、390→**7456**、320→8297。**已发布**：第 33 次提交 `76a18ab` 并推送，线上 25,975 B 与本地逐字节一致（见「第 33 / 34 次讨论」）。
 - **第 23–25 次讨论**：V3 已接 Supabase 并**发布上线**（https://qilumanman.github.io/，见下文「GitHub Pages 发布」）；**第 25 次**把关系选项「网友」换成「恋人」并已发布推送，**线上约束 `ck_feedback_relation` 已完成迁移**（用户已在 SQL Editor 执行 `db/migration_relation_lover.sql`；anon 探针实测 `lover`→201、`online`→400）。
 - **第 26 次讨论（2026-09-17）**：**第三版最终形态定稿归档完成** —— 重拍 4 张最终截图（同时覆盖 `作业提交区/01-截图/第三版-*.png`）、刷新 `版本存档/V3-意见反馈/` 的 `备份/`（21/21 与仓库根逐字节一致）与 `服务端源码/`（4 → **5** 文件，新增 `migration_relation_lover.sql`）、新建 **`版本存档/V3-意见反馈/归档说明.md`**、追加对话记录、**订正 `index.html` MD5**。详见下文「第 26 次讨论」一节。
 
@@ -797,6 +797,47 @@ $line = 'cmd.exe /c python "' + $srv + '" --port 8000 >> "' + $log + '" 2>> "' +
 - **b) 节「想法来源」需逐功能确认**：用户只勾了「课程作业要求」，其余（数字分身、围棋落子、意见反馈 + 后台、二级页、背景大图、WebP 优化、自动识别通道）尚未逐个定源。
 - 报告可复用素材：`对话记录.md` 第 1–33 次、`outputs/第五版-内容改动清单.md`、各版 `归档说明.md`、`作业提交区/01-截图/`（第一至第五版）、本 SKILL 各版指纹。
 - 上一轮未决项照旧：`outputs/预览/` 旧图清理、`outputs/第四版-内容对照表.xlsx` 是否重出、3 条低优先版式小项、01 区是否补真实素材。
+
+## 第 34 次讨论：英文报告 PDF 交付 + 版本口径统一为「第四版」（2026-10-02）
+
+### 一、用户本轮决定（question 结构化回答）
+
+| 问题 | 用户选择 |
+| --- | --- |
+| 站点「第四版 / 第五版」措辞不一致 | **「其实最终版就是第四版，把最终版本当做第四版就行」** → 站点页脚与博客的「第五版」全改「第四版」；10-02 的回归修复 + 图片优化在报告里记作 **final fixing/optimisation pass**，不再充当「第五版」 |
+| b) 节「想法来源」 | 按 11 行对照表原样写：**课程作业要求 / 个人兴趣 / 自备素材 / 参考图 / AI 提议后我拍板** 五类 |
+| 是否写明 AI 参与 | **写明 AI 助手（DeepWorks）参与** |
+| 封面信息 | **只放标题 + `Lan Xiyang` + 日期**（不写学号 / 班级） |
+| 截止时间 | **「今天就交」** → 交付日不做高风险改动，改动后逐项复核 |
+
+### 二、交付物：报告 PDF（已完成）
+
+- 路径 `outputs/Lan Xiyang_Personal Homepage.pdf`：**959,328 B / 13 页 A4 / MD5 `4B062F3B1505D26C9CEE610A3DAE456E`**（末次重建于版本口径统一之后）；内嵌 **12 张插图**（DCTDecode）+ **9 个字体子集**（SegoeUI / Georgia / Consolas / MicrosoftYaHei / NSimSun，中文「可以」由 NSimSun 与 YaHei 子集覆盖）。
+- **生成链（可复用）**：`.deepworks/tmp/report.html`（自写 HTML + CSS，`@page A4 13/14mm`、`print-color-adjust:exact`）→ 连同 `report_img/` 暂存到**纯 ASCII 目录** `C:\Users\ASUS\AppData\Local\Temp\opencode\report\` → Edge `--headless=new --disable-gpu --no-pdf-header-footer --virtual-time-budget=25000 --print-to-pdf=<ASCII 无空格路径>` → `Copy-Item` 到 `outputs/Lan Xiyang_Personal Homepage.pdf`。
+- 结构：封面（标题/副题/Lan Xiyang/日期/线上链接/关键事实表/AI 辅助声明）→ Overview → **(a)** 四版开发史（V1 1280×2400、V2 1440×4403、V3 1440×5548、V4 1440×5323、final pass 1440×5391，含截图与逐版说明）→ **(b)** 11 行功能-来源表 + 三段专题（数字分身诚实性、19 路围棋、about/contact 图）→ **(c)** 11 个问题（症状/原因/修法/证据）+ 2 条次级问题 → **(d)** 反馈通道设计 + 真实留言「可以可以」4/5 + 8 行决策-理由表 + 4 条工作方式改变 → 附录（仓库结构、核验方法、诚实限制）。
+- **素材**：`.deepworks/tmp/report_img/*.jpg` 13 张 / 668,371 B（`make_report_imgs.ps1` 从 `作业提交区/01-截图/` 与 `outputs/第五版-预览/` 用 GDI+ 按实测坐标裁出；`m1.jpg` 备用未用）；**区块坐标来源**：仓库根 `__probe_sections.html`（iframe `/index.html`，1440 宽）→ `--dump-dom` → `parse_probe.py`：header 0–69、hero 69–765、about 1258–1793、learning 1793–2297、avatar-chat 2297–2897、hobby 2897–3751、contact 3829–4146、feedback 4146–5291、footer 5331–5417、goBoard 3159–3499、chatWindow 2589–2739、fbForm 4399–5271、aiFab 5306–5374。
+
+### 三、版本口径统一（已发布）
+
+- **站点改动 5 行**（中文每字 3 字节 → **替换前后文件字节数完全不变**）：`index.html` / `pages/about.html` / `pages/blog.html` / `pages/projects.html` 页脚「个人主页（第五版）」→「（第四版）」共 4 处；`pages/blog.html` 正文「现在到第五版」→「现在到第四版」。`pages/projects.html` 原有「第四版重点改的是内容」**保持不动**，与新口径一致。→ 全站 `第五版` 命中 **0**。
+- **报告同步**：封面事实行改为「V1 (3 Sep) → V2 (10 Sep) → V3 (13–17 Sep) → V4 (27 Sep, final content) + fixing/optimisation pass (2 Oct, published)」；正文一律 `V4` / `final pass`（全文 `V5` 命中 **0**）；新增一段 `.small`「How the versions are numbered」说明**站点页脚为何是（第四版）而归档目录按工作顺序命名**（`版本存档/V5-回归修复与图片优化/` 是内部工作顺序，不是对外版本号）。
+- 发布前必查 `prepublish_check_v5.py`：22 个文本文件 8 模式 **0 命中**、位图残留 0。
+
+### 四、本轮新增环境坑（重要，都是新踩的）
+
+- **⚠️ `Start-Process -ArgumentList` 不会给含空格的参数自动加引号** → `--print-to-pdf=C:\…\Lan Xiyang_Personal Homepage.pdf` 被拆成两个参数，Edge 报 **`Multiple targets are not supported in headless mode`**（exit 13）。**正解：先打印到纯 ASCII 无空格路径 `…\opencode\report\build.pdf`，再 `Copy-Item` 到目标文件名。**
+- **`& msedge.exe … --print-to-pdf=…` 内联调用不产出文件**（与截图的旧结论一致）→ 必须 `Start-Process -Wait -RedirectStandardOutput/-RedirectStandardError`；成功判据是 stderr 里的 `NNNN bytes written to file …`。`libpng warning: tRNS`、`QQBrowser user data path not found`、`fallback_task_provider` 均为无害噪音。另：**`file://` 打开含中文的路径在本轮未成功**，改用纯 ASCII 暂存目录后一次通过。
+- **⚠️ write 工具产出的 `.ps1` 是无 BOM UTF-8，PS 5.1 按 ANSI(936) 解码** → 脚本里的中文路径被破坏（报「路径中具有非法字符」，或更糟：静默写错位置）。修法：`[System.IO.File]::WriteAllText($p, $t, [System.Text.UTF8Encoding]::new($true))` 补 BOM；**更稳的做法是脚本里根本不写中文** —— 项目根用 `Split-Path (Split-Path $PSScriptRoot -Parent) -Parent` 求。
+- **用 `-replace` 往脚本里补 CRLF 会写入字面 `` `r`n ``**（单引号里的反引号不被解释）→ 生成语法错误的脚本；**别用正则改脚本代码，直接重写文件**。
+- **`edit` 工具偶发 `DEEPWORKS_FILE_WRITE_LOCK_TIMEOUT`**（重试同样失败）→ 改用 Python 二进制读改写即可（本项目对 `css/main.css` 本来就是这条规矩）。
+- **PDF 自检配方（无 PIL / 无法目验时的替代）**：① 数 `/Type /Page[^s]`；② 查 `/Count` 页树；③ `/MediaBox` 应全为 `594.96 × 841.92`；④ 用 `zlib.decompress` 解开每个 stream，统计 `Tj`/`TJ` 与图像指令 —— **确认没有任何空白页**；⑤ `/BaseFont` 形如 `AAAAAA+SegoeUI` = 子集已嵌入，`/FontFile2` 计数 = 嵌入字体数；⑥ ToUnicode CMap 里查 `53ef`/`4ee5` 判定中文可渲染；⑦ 插图是否空白：GDI+ 稀疏采样算均值/标准差（空白页 SD ≈ 0，本次 13 张 **SD 16–40**，均值 196–249 符合米白底色）。
+- **篇幅控制（22 → 13 页）**：去掉 `.sec{page-break-before:always}`、只留 `.cover{page-break-after:always}`；插图两栏并排（`.row`）并按比例缩宽（`.w22/.w38/.w50/.w52/.w54/.w60`）；行高 1.52→1.4、字号 9.6→9.15pt、表格/盒模型 padding 收紧。
+
+### 五、收尾同步
+
+- `outputs/源码/js/feedback-config.js` **3,593 → 3,989 B**（此前快照落后于仓库与线上；现与仓库逐字节一致），其余 8 个源文件（`index.html` / `css/main.css` / `js/*` / `pages/*`）本就一致。
+- 删除仓库根探针页 `__probe_sections.html`；`git status` 仅站点 4 文件改动。
+- 线上复核：`https://qilumanman.github.io/` HTTP 200 / 25,975 B（**发布后须轮询**，Pages 构建有约 25 秒延迟）。
 
 ## 新对话启动流程
 
