@@ -699,7 +699,7 @@ $line = 'cmd.exe /c python "' + $srv + '" --port 8000 >> "' + $log + '" 2>> "' +
 - 新增 `window.pickFeedbackMode(hostname, protocol)`：`file:` 与公网域名 → `supabase`；`localhost` / `127.0.0.1` / `::1` / `[::1]` / `0.0.0.0` / `192.168.*` / `10.*` / `172.16–31.*` → `local`；`mode: window.pickFeedbackMode(location.hostname, location.protocol)`。
 - 单测 **9/9** 通过；本机真实填表提交 → 落库字段正确 + 三段状态文案正确（测试行 id=12 已自删）。
 - 收尾更正 `js/feedback.js` 头部注释（8,444 → 8,485 B）：原写「数据通道两选一」→ 改「按运行环境自动识别」，并去掉注释里的本机数据库文件名（发布前必查首次命中 2 处就在这两个文件的注释里）。**逻辑零改动**，改后重跑 9/9 + 真实提交（id=13 已自删）结果一致。
-- 已知事实：**Supabase 项目 `knvgdbyzckdoiukafsrh` 已被用户确认「已暂停或不存在」** → 线上提交必然失败（前端**如实提示失败**，不假成功）；本机 DNS 对该域名全 NXDOMAIN（8.8.8.8 / 1.1.1.1 同样、DoH 被掐、常见代理端口 closed）。要恢复线上收信须重建项目并回填地址与 anon key。
+- 历史事实（本轮已解决，见「第 33 次讨论」）：当时 **Supabase 项目 `knvgdbyzckdoiukafsrh`** 被用户确认「已暂停或不存在」→ 线上提交必然失败（前端**如实提示失败**，不假成功）；本机 DNS 对该域名全 NXDOMAIN（8.8.8.8 / 1.1.1.1 同样、DoH 被掐、常见代理端口 closed）。**教训（重要）**：对 `*.supabase.co` 全 NXDOMAIN 不是本地网络问题，而是**该项目的 DNS 已被 Supabase 撤下（项目被删/暂停过久）**；项目 2026-10-02 恢复为 Active 后，同一台机器上 DNS 立刻恢复正常解析（104.18.38.10 / 172.64.149.246），URL 与 anon key 都无需改动。
 
 ### 五、版本标记 / CLS / 清理
 
@@ -732,11 +732,71 @@ $line = 'cmd.exe /c python "' + $srv + '" --port 8000 >> "' + $log + '" 2>> "' +
 
 ### 八、本版遗留（交给下一轮 / 用户决定）
 
-- **未推送**：线上仍是第三版（`main` = `065d717`），`git commit` + `push` 待用户拍板。
-- **线上反馈收不到**：Supabase 项目已暂停/不存在，需重建项目才能恢复线上收信。
+- **已推送**（2026-10-02）：`main` = `76a18ab`（提交信息「第四、五版：内容精简与背景大图，六项回归修复与 WebP 图片优化」），`push` 成功 `065d717..76a18ab`；线上 <https://qilumanman.github.io/> 首页 **25,975 B 与本地逐字节一致**，`assets/images/figures/agent-v2.webp` 线上 200 / 29,118 B。
+- **线上反馈已恢复**（2026-10-02）：Supabase 项目由 Paused 恢复为 Active，URL 与 anon key 未变，无需改代码；三项实测见「第 33 次讨论」。
 - 低优先版式小项（本轮未做）：品牌副标题 11.5px 是否提到 12px；首屏 Bento 卡是否再紧凑；「脑机接口」卡是否加 EEG 波形装饰；`📍 深圳` 是否换 Lucide `map-pin`（去 Emoji）。
 - `outputs/源码/` 内 2 个 V4 时代旧位图**已按用户确认清理**（移入 `.deepworks/tmp/leftover_v4_imgs/`，未删除、MD5 一致可随时取回）→ 现 `outputs/源码/` = **28 文件**（27 站点文件 + 单文件版副本）；`outputs/预览/` 旧图、`outputs/第四版-内容对照表.xlsx` 是否重出仍未定。
 - V5 归档说明已记录一处版本遗留不一致：V4 归档写的 `index.html` = 37,952 B，而 V4 定稿当轮构建脚本文档里出现过 22,522（那是**字符数**不是字节数）等不同口径，V5 一律以**本轮实测值**为准。
+
+## 第 33 次讨论：交付形态升级 —— 发布 V5 + 恢复线上通道 + 改交「英文报告 PDF」
+
+### 一、触发：作业要求变了（用户上传要求截图，2026-10-02）
+
+新要求共 3 条（英文原文要点）：
+
+1. **提交已发布个人主页的链接**（明确注明「actual digital twin function not required」——不要求真的做出数字孪生）。
+2. **提交一份报告（pdf preferred）**，内容包括但不限于：
+   - **a) Development history** —— 各版本记录 + 截图；
+   - **b) Major functions added or modified** —— 需说明 **sources of idea**；
+   - **c) Problems occurred and solved** —— 要讲清 **why and how**；
+   - **d) Feedbacks collected and decision-making** —— 含 **reasons and discussion**。
+3. **文件名格式**：`Firstname Lastname_Personal Homepage.pdf`。
+
+**结论（架构级）**：`作业提交区/02-对话记录/对话记录.md`（28 次讨论、136 KB）**不再是交付物**，降级为**报告素材/附录**；交付物改为「线上链接 + 提炼过的报告」。
+
+### 二、用户本轮 6 项决定（question 结构化回答，勿再自行更改）
+
+| 问题 | 用户选择 |
+| --- | --- |
+| 报告语言 | **英文** |
+| 发布哪个版本 | **发布第五版** |
+| 线上反馈表单（Supabase 已暂停） | **重建/恢复 Supabase 项目修好** |
+| 报告文件名用名 | **`Lan Xiyang`**（中文习惯「姓 名」拼音；与要求里 Firstname Lastname 的顺序相反，已向用户说明，最终以用户选择为准） |
+| 报告篇幅 | **精简版 8–14 页** |
+| 「想法来源」主要出处（多选） | **课程作业要求**（另需逐功能确认，见遗留） |
+
+### 三、执行结果一：发布第五版成功
+
+- `git add -A` 已暂存 **19 个文件**（14 改 + 5 新增 `assets/images/figures/*.webp`）；提交 `76a18ab`，推送 `065d717..76a18ab`，`main...origin/main` 已同步。
+- **发布前令牌扫描配方（务必照抄）**：`$tok = (Get-Content db/admin_token.txt -Raw).Trim()` → 遍历 `git ls-files` 逐文件 `Get-Content -Raw -Encoding UTF8` → `$c.Contains($tok)`；**命中必须为 0** 才推。本次 0 命中（命中的 `admin_token` 字样都只是"路径说明文字"）。另扫 `BEGIN (RSA|OPENSSH) PRIVATE KEY|service_role|sk-[A-Za-z0-9]{20,}` → 仅文档措辞命中，无真实密钥。
+- **提交信息必须走 `-F` 文件**：PowerShell 5.1 直接把中文当参数传给 `git commit -m` 会按系统中编码（936）编码 → 消息乱码；改用 write 工具写 UTF-8 消息文件 + `git commit -F .deepworks/tmp/commit_msg.txt`（`git log --format=%B` 复核正常）。
+- **线上保真核验**：`Invoke-WebRequest https://qilumanman.github.io/` 读 `RawContentStream.ToArray()` + 显式 UTF-8 解码，比对**字节数 = 本地 25,975 B** 并检索「第五版」与 `april-violin-piano.webp`；首次尝试仍是旧版（37,063 B），**第 2 次（约 25 秒后）即为新版** → GitHub Pages 构建有延迟，必须**轮询**而不是测一次就下结论。`push` 时设 `$env:GIT_TERMINAL_PROMPT="0"` 可避免凭据提示挂死。
+
+### 四、执行结果二：Supabase 线上通道恢复（URL/key 未变，代码零改动）
+
+- 用户在控制台把旧项目 `knvgdbyzckdoiukafsrh` 由 **Paused 恢复为 Active**（免费版暂停后一般在 90 天内可恢复）→ **URL 与 anon key 都没变**，`js/feedback-config.js` 的 `supabaseUrl` / `supabaseAnonKey` **一行都不用改**。
+- 同一台机器上 **DNS 立刻恢复正常**（104.18.38.10 / 172.64.149.246）—— 反证此前的全 NXDOMAIN 是「项目被撤下 DNS」，不是本机网络/代理问题。
+- **线上通道三探针配方（可复用）**：`POST {url}/rest/v1/feedback` + 头 `apikey` / `Authorization: Bearer <anon key>`：
+  1. **真实写入**（合法 body）→ 期望 **HTTP 201** = 线上能收信；
+  2. **故意空正文**（`{"message":"","category":"other","status":"new"}`）→ 期望 **HTTP 400 / 23514 ck_feedback_message** = 表、字段约束、表级授权都在位，且**不写脏数据**；
+  3. **匿名读取**（`GET /rest/v1/feedback?select=id`）→ 期望 **HTTP 401 / 42501 permission denied for table feedback** = "只写不读"的隐私策略完好。
+  本次三条全部符合预期。⚠️ 探针 1 会真实留下 1 行 `DeepWorks self-test` 测试留言（已告知用户可在 Table Editor 删除）。
+- ⚠️ **`curl.exe --doh-url` 本机不可用**（返回 `000000`，curl 版本/参数不兼容）→ 一律用 `Invoke-WebRequest` 显式 UTF-8 解码，不要依赖 curl 的 DoH。
+
+### 五、文档同步（本轮已改）
+
+- `js/feedback-config.js` 头部「⚠️ 当前云端状态」整段改写为「✅ 已恢复 + 三项实测数值」（这是**会被发布的站点文件**，过时陈述必须清掉）。
+- `README.md`：45 行「线上反馈目前收不到」→「线上反馈已恢复可用（含 201 / 400 / 401 实测）」；第 50 行「未发布」→「已发布（`065d717..76a18ab`，线上 25,975 B 逐字节一致）」。
+- `SKILL.md`：第 32 次讨论第四节的历史陈述标注为「本轮已解决」并补 DNS 教训；第八节遗留两项改写为已推送 / 已恢复；新增本节。
+- 仍需同步：`outputs/第五版-内容改动清单.md`、`版本存档/V5-*/归档说明.md`、`作业提交区/02-对话记录/对话记录.md`。
+- 记一个环境坑：**`.ps1` 被执行策略拦截**（`UnauthorizedAccess`）→ 必须 `powershell -NoProfile -ExecutionPolicy Bypass -File "<脚本>"` 调用，不能直接 `& script.ps1`。
+
+### 六、本轮遗留（交给下一轮）
+
+- **英文报告 PDF 尚未生成**：目标 `Lan Xiyang_Personal Homepage.pdf`，精简版 8–14 页，四节结构 a/b/c/d；计划用「写 HTML → Edge 无头 `--print-to-pdf`」出 PDF（本机无 LaTeX/PIL/Node，但 Edge 可直接打印 PDF，能带中文与截图）。
+- **b) 节「想法来源」需逐功能确认**：用户只勾了「课程作业要求」，其余（数字分身、围棋落子、意见反馈 + 后台、二级页、背景大图、WebP 优化、自动识别通道）尚未逐个定源。
+- 报告可复用素材：`对话记录.md` 第 1–33 次、`outputs/第五版-内容改动清单.md`、各版 `归档说明.md`、`作业提交区/01-截图/`（第一至第五版）、本 SKILL 各版指纹。
+- 上一轮未决项照旧：`outputs/预览/` 旧图清理、`outputs/第四版-内容对照表.xlsx` 是否重出、3 条低优先版式小项、01 区是否补真实素材。
 
 ## 新对话启动流程
 
