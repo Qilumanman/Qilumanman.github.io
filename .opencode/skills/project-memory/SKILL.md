@@ -21,10 +21,32 @@ metadata:
 
 本技能是该项目**跨对话的记忆锚点**。当你开启新对话（例如做第二个版本）时，加载此技能即可恢复项目关键上下文，避免遗漏历史信息。
 
+> ⚠️ **路径现状（2026-10-03 清理后必读）**：`.deepworks\tmp\` 已**清空**（1.03 GB 临时件已删，目录保留为空）。本文档下方若出现 `.deepworks\tmp\...` 路径，一律改按新位置找：
+>
+> | 旧路径 `.deepworks\tmp\…` | 现位置 |
+> | --- | --- |
+> | `report_cn.html`、`cn_head.html`、`cn_a…cn_e.html`、`report.html`、`report_lite.html` | `报告源件\html\` |
+> | `report_img\` | `报告源件\report_img\` |
+> | `report_en_backup.pdf`、`report_lite_build.pdf` | `报告源件\pdf\` |
+> | `assemble_cn.py`、`pdf_build*.ps1`、`pdf_check*.py`、`pdf_verify_cn.py`、`pdf_pages_cn.py`、`pdf_struct_check.py`、`pdf_font_check.py`、`make_report_imgs.ps1`、`img_sanity.ps1`、`record_round34/35/36.py` | `报告源件\scripts\报告\` |
+> | `prepublish_check_v5.py`、`verify_live_v4.py`、`build_singlefile_v5.py`、`verify_singlefile_v5.py`、`webp_convert.py`、`webp_quality.py`、`check_webp_refs.py`、`sync_source_snapshot.py`、`sync_archive.ps1`、`check_live_assets.py`、`net_check.py`、`final_check.py` | `报告源件\scripts\站点维护\` |
+> | `verify_feedback*.py`、`regress_feedback_auto.py`、`db_inspect.py`、`dump_feedback.py`、`check_rows.py`、`migrate_local_db.py`、`supabase_read.py`、`supabase_feedback_min.sql` | `报告源件\scripts\反馈\` |
+> | `figs_src_v4\` | `报告源件\原始图片\站点插画原图\`（**站点 5 张插画的唯一原图**） |
+> | `figs_in\` | `报告源件\原始图片\素材候选\` |
+> | `facts.txt`、`v4_manifest.txt`、`tree_archive.txt` | `报告源件\参考资料\`；`v4_content_baseline\` → `报告源件\参考资料\V4内容基线\` |
+>
+> **交付物现况（改动报告前后都要按 MD5 核对）**：
+> - `outputs\Lan Xiyang_Personal Homepage.pdf` = 完整版 12 页 **1,474,812 B / MD5 `1193BE7BB664FF7A976CA8CF43E209E3`**
+> - `outputs\Lan Xiyang_Personal Homepage - 精简版.pdf` = 7 页 **1,412,645 B / MD5 `1447984F3739DC46C48DE9479058687A`**
+> - 两份在 `报告源件\pdf\` 另有备份：`交付备份-完整版-12页.pdf`、`交付备份-精简版-7页.pdf`（英文版 13 页备份 `report_en_backup.pdf`）。
+> - 目录用途与重出 PDF 步骤见 `报告源件\README.md`。
+>
+> ⚠️ **同时删掉的还有**：第 18–36 次讨论里提到的旧工具脚本与暂存目录 —— `.deepworks\tmp\shot_v3.ps1`、`run_probe_http_v3.ps1`、`probe_api.py`、`e2e_fields.py`、`crop_final.ps1`、`fix_css.py`、`make_content_xlsx.py`、`start_server.cmd`、`preview\`、`removed_images18\`、`leftover_v4_imgs\`、`shots_v4_stale\`、`junk_v4\`、`probe_pages\`、`backup_before_v3_final_*\`（V3 回滚点，V3 终稿仍在 `版本存档\V3-意见反馈\`）、`feedback_backup_*.db`。这些**没有保留**，文中「可随时取回」的旧说法一律作废。它们多为一次性诊断/截图小脚本，需要时按第 18–36 次讨论记录的技法重写；**本轮保留下来的可复用工具都在 `报告源件\scripts\` 下**。
+
 ## 项目概述
 
 - **项目**：蓝喜阳的个人主页（本人作品，一门课程的作业）
-- **当前阶段**：第四阶段（**V4 已定稿并完成收尾归档**：在 V3「意见反馈」基础上做了**内容真实化改写 + 二级页统一 + 背景大图**；已归档、已出交付截图、已重建单文件版、已追加对话记录，**仅差用户决定是否 `git commit` / `push` 上线**）
+- **当前阶段**：**作业已提交并交付**（2026-10-03：线上站点 `https://qilumanman.github.io/` 作为作业链接提交；报告完整版 12 页 + 精简版 7 页两份 PDF 已备好；工作区已做提交后清理，只剩必要文件 —— 详见文末「第 37 次讨论」）
 - **制作流程**：共四个阶段，第一版原型已完成并定稿，第二版已定稿归档，第三版已定稿归档并上线，当前进入第四阶段
 - **技术路线**：静态 HTML / CSS / JS + **Tailwind CSS**（本地化引入 `assets/vendor/tailwind-play.js`，关闭 preflight，`darkMode: "class"`）+ **Lucide 线条图标**（内联 SVG）+ **原创围棋子 SVG**（本地预览）+ **原生 Canvas 交互组件**（`js/go-board.js`，无第三方动画库）+ **原生 JS + CSS 微特效**（鼠标跟随光晕卡片、雷达脉冲光环、打字机输出、点击形象跳「铁山靠」、悬停围棋盘浮现「欢迎切磋」，全部零依赖）
 - **第三版新增技术栈（意见反馈）**：前端纯静态 `js/feedback.js`（ES5/IIFE，**只提交、不读取**）+ `js/feedback-config.js`（双模式适配层）+ 本地后端 `server.py`（**Python 标准库 `http.server` + `sqlite3`，零第三方依赖**）；线上模式预留 Supabase PostgREST（同一份前端代码，只改配置）
@@ -95,14 +117,14 @@ metadata:
     - V2 视觉第三次迭代 · 黄白杂志风（第 17 次讨论，配色定型）：
 用户定风格为**清新编辑杂志风 + 轻科技学术风**，主调**黄白色**，并逐轮确认：① 主色 = **奶油暖黄 + 琥珀金**（米白纸感底、琥珀金主色、墨黑正文）② **蓝色全部换成黄白暖色**（含数字分身卡通形象身上的蓝色件）③ **只换视觉皮肤、版式沿用**（严格按上一轮结构，不重排 / 不改文案 / 不动交互）。做法：① 写一次性脚本 `.deepworks/tmp/theme_warm.ps1`（**纯 ASCII**，映射表 + 残留扫描）做「令牌 + 硬编码颜色」双轨替换，**改名而不是删名**（`--blue-dark→--gold-deep`、`--blue→--gold`、`--blue-soft→--gold-soft`、`--sky→--sun`、`--violet→--clay`、`--violet-soft→--clay-soft`、`--green→--olive`），规则条数与引用关系一个没变 → 结构零风险；② 新增三个令牌：`--rule`（发丝线）、`--paper-line`（稿纸网格线色）、`--font-display`（衬线字体栈）；③ 内联 SVG 21 组颜色换暖金（`#EAF9FF→#FFF8E4`、`#3B9BE0→#D9A02B`、`#2563EB→#C8891F`、`#20405C→#3A2C12` …），类名 `note-blue → note-clay`；④ 排版：`body::before` 加 **46px 稿纸细网格** + 4 层暖色径向光雾，标题族（hero / sec-title / cta-title / card-title / 品牌名 / 区块编号）改衬线体、字重 800→700、字距收紧，`.sec-eyebrow` 改琥珀金并右侧接发丝线；⑤ **把「黄」提到「面」上**（第一版换完偏棕）：`.btn-primary` 改 `linear-gradient(135deg,#f0c04a,#dda032 52%,#c8891f)` + **墨色文字 `#3a2c12`**，`.bubble-user`、`.go-board-cheer` 同样改渐变 + 墨字，`--gold` 由 `#b8791a` 提到 `#c2811b`，并把 CSS 里残留的 `color:#fff` 全部改成墨色；⑥ `C_LIGHT` 里的蓝色点缀（悬停幽灵子 / 涟漪 / 最后一手标记）改琥珀金，`C_DARK` 整块保留。结果：CSS 替换 108 处、`index.html` 56 处、`go-board.js` 9 处，**冷色残留扫描 0 命中**；`index.html` 字节数不变（映射表全是「7 位十六进制 → 7 位十六进制」），`main.css` 28,999 → **30,156**，`go-board.js` 16,616 → **16,670**，单文件版 422,118 → **423,654 字节**。
   - V2 撤下双校配图（第 18 次讨论，**当前在线版本**）：用户指令「把身份那栏的两张照片删掉，然后替换第二版的存档和截图」。做法：① `index.html` 删掉「身份」卡里的整块 `<figure class="media-strip">`（两个 `.media-thumb` 缩略图按钮 + `<figcaption>天津大学 × 香港理工大学 · 双校联合培养</figcaption>`）与上方注释；② `css/main.css` 给 `.card-identity` 补 **`align-self: stretch`** —— 删图后左卡只剩 141px 高，而 `.about-grid` 是 `align-items: start`、右列三张信息卡 358px，左列会留 217px 空白，撑满后两列齐平（644×358 = 488×358）；③ **有意保留**：`<dialog id="mediaViewer">` 灯箱的 HTML / `.media-viewer*` CSS / `js/main.js` 里那段灯箱逻辑全部留着（页面已无 `.media-thumb`，它是**休眠代码**，不加载、不报错；留着便于日后把照片放回来），`assets/images/` 两张图也仍在磁盘上但已不被任何页面引用。实测：桌面 `scrollH` 4420 → **4403**、手机 5505 → **5053**（手机也走了单列，身份卡 617 → 165）；**单文件版 423,654 → 94,843 字节（−328,811，两张 base64 照片原本占约 329 KB，占原体积的 78%）**；`index.html` 33,672 → **32,360**、`main.css` 30,156 → **30,283**。探针：结构 / 棋盘 / 重叠 / 单文件四项全绿，`errs:[]`、`thumbs:0`、`mediaImgs:0`、`performance` 里 `assets/images/*` 请求 **0 条**。
-- 主要文件：`index.html`（32,360 字节，**已无图文素材块**）；`css/main.css`（30,283 字节，手写样式，黄白杂志风）；`js/main.js`（数字分身关键词问答 + 打字机 + 光晕卡片 / 悬浮头像 / 铁山靠 / 图文灯箱，**无颜色逻辑**；灯箱那段自第 18 次撤图后已**休眠**，仅剩 `if (mediaViewer && …)` 守卫下的死代码）；`js/go-board.js`（Canvas 围棋交互组件，双主题：`C_LIGHT` 黄白暖色纸面风 / `C_DARK` 深色科技风）；`assets/images/`（**只剩 `sample-avatar.svg`** —— 两张双校配图已于第 18 次经用户确认移出到 `.deepworks/tmp/removed_images18/`，可随时取回）。
+- 主要文件：`index.html`（32,360 字节，**已无图文素材块**）；`css/main.css`（30,283 字节，手写样式，黄白杂志风）；`js/main.js`（数字分身关键词问答 + 打字机 + 光晕卡片 / 悬浮头像 / 铁山靠 / 图文灯箱，**无颜色逻辑**；灯箱那段自第 18 次撤图后已**休眠**，仅剩 `if (mediaViewer && …)` 守卫下的死代码）；`js/go-board.js`（Canvas 围棋交互组件，双主题：`C_LIGHT` 黄白暖色纸面风 / `C_DARK` 深色科技风）；`assets/images/`（原暂存目录已在 2026-10-03 清理中删除，**不可取回**）。
 **现役页面不引用任何外链框架**：`assets/vendor/`（Tailwind Play 替身 + 8 个 Lucide 图标）保留在仓库里但已不被 `index.html` 引用（探针实测 `tailwind:false`、`stylesheets:1`）。
 - 截图与备份：V1 存 `版本存档/V1-前期准备/`；V2 现有三份存档 —— `V2-深色科技风/`、`V2-浅色新风/`、**`V2-黄白杂志风/`（第 18 次定稿、第 19 次随二级页统一一并更新：`备份/` **19 文件** + `完整截图/` 2 张，备份含 `index.html`/`README.md`/`opencode.jsonc`/`css/`/`js/`/`pages/`×3/`assets/`；两张双校配图已按用户确认移出）** —— **第 28 次核查订正**（此前记的「16 文件 / index.html 32,360」为第 18 次时点值）：实测 `备份/index.html` **31,690 字节 / `E16E09C0404E9501B163FF6AAD0C7502`**（页脚「个人主页（第二版）」、无 `media-strip`、无反馈引用，确为 V2 最终形态）、`备份/README.md` 6,782；
 作业截图存 `作业提交区/01-截图/`（第二版桌面 **1440 × 4403** = 1,328,458 字节 / MD5 `7116E353AF2DF720E00CA2F5DAF3C0BE`，手机 **504 × 5053** = 830,022 字节 / MD5 `5EBEEA4C6EA3725ABCAF1B37ABBEE0F2`；`作业提交区/01-截图/`、`作业提交区/` **根目录下的两份同名遗留截图** 与 `版本存档/…/完整截图/` 三处已全部同步为当前终稿、MD5 一致。第 17 次那两张 1440×4420 / 504×5505 的截图已被本轮取代）
 - 交付物：`outputs/源码/`（**14 个文件**：`index.html` 32,360 字节 / `css/main.css` 30,283 字节 / `js/main.js` 15,586 字节 / `js/go-board.js` 16,670 字节 / `assets/`（**只剩 `sample-avatar.svg`** + `vendor/`，两张双校配图已于第 18 次移出））、
 `outputs/棋路漫漫-个人主页-单文件版.html`（**94,843 字节**，纯内联、零外链，**已内联图片 0 张**，本地引用 0 / CDN 引用 0）、`outputs/预览/`：**`第二版-黄白-hero.png` / `-avatar.png` / `-notes.png` / `-board.png` / `-about.png`**（黄白版裁切图），另有上一轮四张 `第二版-浅色-*.png`、三张微特效图、**`第二版-图文素材-双校联合培养.png`（第 18 次后已失效）**、一张深色整页样机（**旧预览图是否删除必须等用户确认**）。
 - 下一步：第 18 次的删除 + 存档 / 截图替换已全部完成；**用户已拍板：只清掉 `assets/images/` 两张废图（已完成，见下）**，其余三项仍待拍板：① 是否把**已休眠的灯箱代码**（`<dialog id="mediaViewer">` + `.media-viewer*` CSS + `js/main.js` 里那段）也彻底删除（可再瘦一点、目录更干净；**必须用户确认，不擅自删文件**）；② `outputs/预览/` 里旧预览图（含已失效的 `第二版-图文素材-双校联合培养.png`）是否删除；③ `pages/`（关于 / 作品 / 博客）三个二级页面仍是第一版旧样式，是否统一成黄白杂志风（**未确认前不要动**）；④ 需求截图里另有 3 条版式优化始终未做（卡片去固定高度改紧凑 Bento；脑机接口卡加内联静态 EEG 波形 + 2–3 个技术关键词标签；`📍 深圳` 拟用 Lucide `map-pin` + 文字胶囊替代 Emoji）。三份 V2 存档均已验证归档副本可独立打开、渲染与项目根一致。
-- **第 18 次收尾 · 用户确认后的废图清理（已完成）**：用户在多选里只勾了「删 `assets/images` 两张废图」。做法：写 `.deepworks/tmp/remove_unused_images18.ps1`（纯 ASCII、CJK 用 `[char]0x…`），把三处**当前版本**副本（项目根 `assets/images/`、`outputs/源码/assets/images/`、`版本存档/V2-黄白杂志风/备份/assets/images/`）里的 `dual-campus-cover.jpg`(149,176) 与 `dual-degree-framework.jpg`(96,565) 共 6 个文件**移动到** `.deepworks/tmp/removed_images18/{root,outputs-src,archive-bak}/`（沿用第 15 次「移动而不是硬删」的习惯，可随时取回），三处各只剩 `sample-avatar.svg`。**注意：`版本存档/V2-浅色新风/备份/`、`V2-深色科技风/备份/` 和 `首页替换前快照/` 里的同名图必须保留** —— 那几版的 `index.html` 仍引用它们（grep 实测各 2 处引用），删了会破坏历史存档的自包含性。清理后计数：备份 18 → **16**、`outputs/源码` 16 → **14**；`verify18.ps1` 复跑仍 **FAILURES: 0**；版面探针 @1440×4403 复测 `errs:[]`、`scrollH 4403`、`gapUnderIdentity 0`、`reqs []`，与清理前逐项一致（单文件版内联图片本就是 0 张，无需重建）。
+- **第 18 次收尾 · 用户确认后的废图清理（已完成）**：用户在多选里只勾了「删 `assets/images` 两张废图」。做法：写 `.deepworks/tmp/remove_unused_images18.ps1`（纯 ASCII、CJK 用 `[char]0x…`），把三处**当前版本**副本（项目根 `assets/images/`、`outputs/源码/assets/images/`、`版本存档/V2-黄白杂志风/备份/assets/images/`）里的 `dual-campus-cover.jpg`(149,176) 与 `dual-degree-framework.jpg`(96,565) 共 6 个文件**移动到** `.deepworks/tmp/removed_images18/{root,outputs-src,archive-bak}/`（原暂存目录已在 2026-10-03 清理中删除，**不可取回**），三处各只剩 `sample-avatar.svg`。**注意：`版本存档/V2-浅色新风/备份/`、`V2-深色科技风/备份/` 和 `首页替换前快照/` 里的同名图必须保留** —— 那几版的 `index.html` 仍引用它们（grep 实测各 2 处引用），删了会破坏历史存档的自包含性。清理后计数：备份 18 → **16**、`outputs/源码` 16 → **14**；`verify18.ps1` 复跑仍 **FAILURES: 0**；版面探针 @1440×4403 复测 `errs:[]`、`scrollH 4403`、`gapUnderIdentity 0`、`reqs []`，与清理前逐项一致（单文件版内联图片本就是 0 张，无需重建）。
 - **第 18 次收尾 · V2 定稿 + 提交区截图三处对齐（已完成）**：用户指出「作业提交区的截图还没改，这个版本作为第二版的最终结果」。排查发现 `作业提交区/01-截图/` 那两张**已经是**终稿（MD5 `7116E353` / `5EBEEA4C`），但 `作业提交区/` **根目录下还留着两份第 15 次深色科技风时期的同名旧截图**（`第二版-桌面端截图.png` 1,041,346 字节 / `F75CB6EA`、`第二版-手机端截图.png` 689,048 字节 / `17B5516E`，时间戳 09-10），用户看到的是这两个。用 `.deepworks/tmp/sync_submission18.ps1` 覆盖为终稿并三处比对，**FAILURES: 0**。同时把 `README.md` 改为「第二版（V2）已定稿——当前在线版本即第二版最终结果」（6,313 字节 / `4A0C2BB6`，已用 `sync_readme18.ps1` 同步到 `版本存档/V2-黄白杂志风/备份/`；`verify18.ps1` 复跑仍 **FAILURES: 0**，backup 16 / source 14 / submission shots 4 / 单文件 94,843）。**待用户拍板**：`作业提交区/` 根目录下这两份重复截图是否删掉（`01-截图/` 才是规范位置）；注意 `outputs/源码/` 里**没有** `README.md`（`verify18.ps1` 只比对根与备份两处）。
 
 ## 第三版（V3）已定稿并归档 · 意见反馈
@@ -135,9 +157,9 @@ metadata:
 - **后台令牌**：存在 `db/admin_token.txt`（**必须 gitignore，绝不入库，也绝不写进本记忆文件**）；**令牌值一律不记录**，后台地址 `http://127.0.0.1:8000/admin?token=<见 db/admin_token.txt>`。
   - **⛔ 第 26 次教训（已修复）**：本记忆文件此前把令牌明文写了进去，而它**被 git 跟踪并推送到了公开仓库** → `raw.githubusercontent.com/.../.opencode/skills/project-memory/SKILL.md` 任何人可直接读到（实测命中 4 处）。处置：① 全文脱敏并推送；② **本地令牌已轮换**（删除 `db/admin_token.txt`，`server.py` 的 `load_token()` 会在重启时重新生成），**老令牌作废**；③ 规则升级：**任何入库文件（含 `.opencode/`）都不得出现令牌明文**，只记录「令牌在 `db/admin_token.txt`」这个指针。注意 git 历史里仍留有旧值（未做历史重写），**所以轮换才是真正的止损手段**。
 - **数据表约束**：`STATUSES=("new","read","resolved")`、`STATUS_LABELS={new:未读, read:已读, resolved:已解决}`、`CATEGORY_LABELS={bug:问题反馈, suggestion:功能建议, content:内容意见, other:其他}`（**第 21 次核对：`server.py` 与 `index.html` 都用「内容意见」，两者一致；早期记的「内容补充」是错的**）；**第 21 次新增两个枚举**：`RELATIONS=("classmate","friend","family","teacher","lover","other")` → 同学/朋友/家人/老师/恋人/其他（**第 25 次讨论：原 `online`/网友 已移除，改为 `lover`/恋人，前端 `index.html`、后端 `server.py`、`db/schema.sql`、`db/supabase_feedback.sql` 四处＋线上 `ck_feedback_relation` 约束必须同步**），`DEVICES=("phone","tablet","computer","other")` → 手机/平板/电脑/其他设备（分别对应 `RELATION_LABELS` / `DEVICE_LABELS`，可留空＝`None`）；限长 `MAX_MESSAGE=1000 / MAX_NAME=60 / MAX_CONTACT=120 / MAX_URL=300 / MAX_LABEL=20`。
-- **验证（第 20 次，三层全绿）**：接口自测 `.deepworks/tmp/probe_api.py` → **45/45 通过**（含「GET /api/feedback 必须 405 且文案含『不提供读取』」「无令牌 `/export` 必须 403」「带令牌 `/export` 正文须以『编号,提交时间』开头」等断言）；前端结构检查 `.deepworks/tmp/verify_feedback2.py` → **41/41 通过**（含「已移除留言墙」「CSS 无 `.fb-wall`/`.fb-item`/`.fb-chip` 残留」「`.fb-side` 在位」「`feedback.js` 无 `innerHTML`/无列表逻辑」）；整页与后台截图经视觉确认渲染正常（后台可见 5 列表格 + 统计卡；访客区可见表单 + 隐私卡，无留言墙）。
+- **验证（第 20 次，三层全绿）**：接口自测 `.deepworks/tmp/probe_api.py` → **45/45 通过**（含「GET /api/feedback 必须 405 且文案含『不提供读取』」「无令牌 `/export` 必须 403」「带令牌 `/export` 正文须以『编号,提交时间』开头」等断言）；前端结构检查 `报告源件\scripts\反馈\verify_feedback2.py` → **41/41 通过**（含「已移除留言墙」「CSS 无 `.fb-wall`/`.fb-item`/`.fb-chip` 残留」「`.fb-side` 在位」「`feedback.js` 无 `innerHTML`/无列表逻辑」）；整页与后台截图经视觉确认渲染正常（后台可见 5 列表格 + 统计卡；访客区可见表单 + 隐私卡，无留言墙）。
 - **关键文件（第 21 次改动后实测，旧值见下）**：`index.html` **37,064 字节 / `387BB371DCE5A5D3510F343425DAA19A`**；`js/feedback.js` **8,022 字节 / `C5EA80FEF74CA6E1832D0DBE1C3E14A9`**；`server.py` **30,558 字节 / `F725BD4F41C25780AD2F1830E2F815C0`**；`db/schema.sql` **4,181 字节 / `B1325996A0BBDF7E2A4F34683E83DCF4`**（**已整文件重写**：新增 `relation`/`device` 列 + `ck_feedback_relation`/`ck_feedback_device`）；`db/supabase_feedback.sql` **10,549 字节 / `2E77CEB351873B47BD011B2D4388E9BE`**（**⛔⛔ 第 22 次踩坑结论（最终，两次实测）：Supabase SQL Editor 完全无法执行 `CREATE FUNCTION` / `CREATE TRIGGER` —— 一律报 `ERROR: 42601: syntax error at or near "returns"`（`LINE 45: returns trigger`）：① `$$ … $$` 美元引用包裹函数体 → 报错；② 改用单引号包裹 `as 'begin … end'` → **仍然报错**。它会把这类语句切错位置再发送，与函数体写法无关。→ 最终处置：**把函数 + 触发器整段注释掉（默认关闭）**，并注明「想要 `updated_at` 自动更新就单独新开一个 query 只跑那 9 行」；脚本由此变成 **66 行纯净可粘贴版**（已核对零 `CREATE FUNCTION/TRIGGER` 命中），表结构 / 注释 / 索引 / RLS / grant / 自检全部不受影响。**③ 第 3 次实测又踩一坑：粘贴时 `now()` 的括号丢了（编辑器收到的是 `default now,`），报 `ERROR: 0A000: cannot use column reference in DEFAULT expression`（`LINE 13: created_at timestamptz not null default now,`）→ 已把 `created_at` / `updated_at` 两处默认值改成**关键字 `current_timestamp`**（标准 SQL，不带括号，复制过程不可能再丢）**）（**第 22 次最后加了一段 4.5 防御性授权** `grant usage on schema public to anon;` + `grant insert on table public.feedback to anon;` —— 部分 Supabase 新项目不再自动给 `public` 架构的表级权限，缺了会报 `42501 permission denied for table feedback`；**只授 insert、不授 select/update/delete**。全文＝新列 + 约束 + `comment on column` + 2 索引 + 触发器 + RLS 仅 `anon` INSERT + **4.5 表级 grant** + **老表补列段** + 自检 select，期望 `table_ok=1, five_fields_ok=5, index_count=3, policy_count=1, rls_enabled=true`；归档副本已同步同 MD5）；`db/init_db.py` **9,292 字节 / `7AE3F0D7BB44E987663D6EC92D645C35`**（含 `migrate()` + 新枚举自检用例）；`db/feedback.db` **32,768 字节 / `E27D7701D42B76B294EEFC9CD275132F`**（5 行、13 列、约束已补齐）。**未改动**：`css/main.css` 34,824 / `3A7A20FD662F30514AF0A00AC9961955`、`js/feedback-config.js` 1,592 / `48068D229175C16CD3E7ECE50E0D3A22`、`README.md` 6,782 / `2114B140F7B4977F6C9F9AD37D6B3352`、`js/main.js` 13,984 / `BBD298E33BAB6AC5A00330EBF93B0A85`、`js/go-board.js` 16,670 / `CEDCC0A97CAF625CFA379980EFBD26FC`。（**第 20 次旧值**：`index.html` 35,805 / `C0F2B27BE277BA87FD7685BBFA606944`；`js/feedback.js` 7,215 / `6AF42FF5556CABE7C7486CFFFC9161F4`；`server.py` 24,945 / `3B16E865812E0EBEC9FD4F5BE5405B46`；`db/supabase_feedback.sql` 6,209 / `6CAD523739711DD23C78C899AA7F8A22`。）
-- **验证（第 21 次，四层全绿）**：`python db/init_db.py --selftest` → **12/12 PASS**（新增「reject illegal relation」「reject illegal device」）；`.deepworks/tmp/verify_feedback2.py` → **61/61**（新增「1b. 访客要填的 5 项」检查块）；`probe_api.py` → **45/45**；`probe_delete.py` → **31/31**；`check_rows.py` → 表头 5 列 / 每行都有删除按钮；**新写的端到端探针 `.deepworks/tmp/e2e_fields.py` → 22/22 全过**（真 HTTP：带 relation/device 提交 201 且落库正确、非法 relation/device → 400 且错误信息点名、两字段留空可提交且落库为 NULL、后台能看到「同学 · 手机」与「关系 / 设备未填」、CSV 两新列、`GET /api/feedback` 仍 405、**最后自己删掉自测数据不留垃圾**）。
+- **验证（第 21 次，四层全绿）**：`python db/init_db.py --selftest` → **12/12 PASS**（新增「reject illegal relation」「reject illegal device」）；`报告源件\scripts\反馈\verify_feedback2.py` → **61/61**（新增「1b. 访客要填的 5 项」检查块）；`probe_api.py` → **45/45**；`probe_delete.py` → **31/31**；`check_rows.py` → 表头 5 列 / 每行都有删除按钮；**新写的端到端探针 `.deepworks/tmp/e2e_fields.py` → 22/22 全过**（真 HTTP：带 relation/device 提交 201 且落库正确、非法 relation/device → 400 且错误信息点名、两字段留空可提交且落库为 NULL、后台能看到「同学 · 手机」与「关系 / 设备未填」、CSV 两新列、`GET /api/feedback` 仍 405、**最后自己删掉自测数据不留垃圾**）。
 - **⚠️ 跑探针前先重启 8000 服务**：限流是**每 IP 10 分钟 5 条**且存在内存里，探针会消耗额度（`probe_api.py` 自己就会造自测行）；**重启即清零**。（第 21 次实测：探针跑完库里留下 `#1/#3/#5/#6` 四条「【自测】自测同学」，用户真实那条是 `#2`「可以可以」。）
 
 - **Supabase / GitHub 现状（第 21 次，用户已自行注册，截图确认）**：Supabase 组织 `Qilumanman's Org`（FREE），项目 `Qilumanman's Project`，**URL `https://knvgdbyzckdoiukafsrh.supabase.co`**，Health / NANO / Singapore `ap-southeast-1`；**No migrations / No backups / GitHub: No repository connected → 库里还没有任何表**，需要用户把 `db/supabase_feedback.sql` 粘到 **SQL Editor** 执行（建表 + RLS + 自检查询）。GitHub 账号 **`Qilumanman`**，Projects 看板 `@Qilumanman的无题项目`（空），**仓库未建**；本机 **`gh` CLI 未安装**（`winget` 可用）。**`anon public` key 是公开密钥，写进 `js/feedback-config.js` 是设计如此（RLS 只允许 INSERT、禁止 SELECT，所以公开无风险）；但 `service_role` key 绝不能进仓库。**
@@ -209,7 +231,7 @@ deepworks个人主页/
 - **作者后台**：`http://127.0.0.1:8000/admin?token=<见 db/admin_token.txt>`（令牌明文在 `db/admin_token.txt`；**该文件与 `db/feedback.db` 都必须 gitignore**；令牌值不要抄进任何入库文件）。
 - **CSV 导出**：`http://127.0.0.1:8000/export?token=<见 db/admin_token.txt>`（无令牌 → 403）。
 - **重启（改完 `server.py` 必须重启，否则跑的还是旧代码）**：`Get-NetTCPConnection -LocalPort 8000 -State Listen` 查 PID → `Stop-Process -Id <PID>` → 重新 `Start-Process`；确认方式：`GET /api/feedback` 应回 405，且后台应含「导出 CSV」。
-- **自测脚本**：`.deepworks/tmp/probe_api.py`（接口 45 项）与 `.deepworks/tmp/verify_feedback2.py`（前端结构 41 项），改完反馈相关代码后复跑这两个。
+- **自测脚本**：`.deepworks/tmp/probe_api.py`（接口 45 项）与 `报告源件\scripts\反馈\verify_feedback2.py`（前端结构 41 项），改完反馈相关代码后复跑这两个。
 - **版面探针（第 20 次新增，可复用）**：`.deepworks/tmp/run_probe_http_v3.ps1` —— 把**当前** `index.html` 复制成根目录的 `__probe_v3.html`（注入 `.deepworks/tmp/probe_v3.js`）后**用 HTTP 打开**（`http://127.0.0.1:8000/__probe_v3.html`），用 `--headless=old --dump-dom` 把 `RESULT::{...}` 从 `<title>` 读回。**要点：一定要走 HTTP，不要用 `file://` + `<base href>` 的拷贝页** —— 第 20 次实测那种方式 CSS 会加载失败（探针读到 `body` 默认 8px 边距、页高 19967px 的假数据）。
   - 用法：`powershell -NoProfile -ExecutionPolicy Bypass -File ".deepworks\tmp\run_probe_http_v3.ps1" -Tag http1440 -W 1440 -H 600`（脚本内 `$ErrorActionPreference` 必须是 `Continue`，否则 msedge 打到 stderr 的 `libpng warning` 会被当成终止性错误、导致 `--dump-dom` 输出为空）。
   - 探针返回项：`scrollH/scrollW/innerW/sheets/bodyBg/eyebrowColor/fbTop/fbH/fbWall/fbList/fbSide/fbForm/submitBtn/statusEl/fields/honeypot/radios/emails/formW/sideW/sameRow/sideRightOfForm/sideSaysPrivate/sideSaysCantDelete/overCount/maxRight/goBoard/footerHasThird/errs`。
@@ -221,7 +243,7 @@ deepworks个人主页/
 - 后台每行操作区在状态按钮之后多一个红色「删除」按钮（`.ops button.danger`），点击先 `confirm()` 二次确认（提示语提醒先导出 CSV 备份），再 `POST /api/admin`，body 为 `{"action":"delete","id":N}`。
 - 后端语义：`action` 缺省仍是 `status`（旧写法完全兼容）；`action=delete` + 令牌正确 → 200 `{"ok":true,"deleted":1}`；id 不存在 → 404；`action` 未知 → 400；id 非数字 → 400；无/错令牌 → 403（在解析 body 前就拦掉）。
 - 访客侧**没有任何删除入口**（页面无 `data-del`，公开侧只有 `POST /api/feedback` 新增）。
-- 自测脚本 `.deepworks/tmp/probe_delete.py`（**31 项**，报告 `.deepworks/tmp/probe_delete.txt`）：先记录基线 id → 自己造一条自测数据 → 验证 403/403/404/400 全部被拒且没误删 → 回归（旧写法标记已读仍可用）→ 正常删除 → 验证 CSV 里也不再有它 → **最终 id 列表 == 基线**。配套 `.deepworks/tmp/check_rows.py` 用来看后台数据与每行按钮数量（只读）。
+- 自测脚本 `.deepworks/tmp/probe_delete.py`（**31 项**，报告 `.deepworks/tmp/probe_delete.txt`）：先记录基线 id → 自己造一条自测数据 → 验证 403/403/404/400 全部被拒且没误删 → 回归（旧写法标记已读仍可用）→ 正常删除 → 验证 CSV 里也不再有它 → **最终 id 列表 == 基线**。配套 `报告源件\scripts\反馈\check_rows.py` 用来看后台数据与每行按钮数量（只读）。
 
 ### ⚠️ 第 20 次新增的两个工具链坑（都坑过一次）
 
@@ -327,11 +349,11 @@ $line = 'cmd.exe /c python "' + $srv + '" --port 8000 >> "' + $log + '" 2>> "' +
   - ✅ **用户已在 Supabase SQL Editor 执行该脚本，线上约束已迁移完成**（SQL Editor 只回显「Success. No rows returned」，因为末尾那条自检 select 没一起跑，**这不代表失败**）。
   - **线上实测证据**（`.deepworks/tmp/probe_live_lover.py`，用与网页一致的公开 anon 密钥走真实访客链路）：`relation=lover` → **HTTP 201**（能存下「恋人」）；`relation=online` → **HTTP 400 `23514 ... violates check constraint "ck_feedback_relation"`**（证明库里的约束已是包含 lover 的新版，且约束名确实叫 `ck_feedback_relation`）；`GET /rest/v1/feedback`（匿名）→ **HTTP 401 `42501 permission denied`**（只写不读仍然成立）。
   - ⚠️ 判断「线上数据库改动是否生效」的通用做法：**不要看 SQL Editor 的 "Success. No rows returned"，要用公开密钥打一次真实的 insert 探针**（能 201 就是生效），再用旧值打一次（应 400）反向确认。
-- **SQLite 无法 ALTER CHECK 约束** → 本地 `db/feedback.db` 用「重建表」方式迁移：备份 → 读出全部行 → `drop table feedback` → `executescript(db/schema.sql)`（顺带重建 2 个索引 + updated_at 触发器）→ 按原 id 回插 → 修 `sqlite_sequence` → 探针验证。脚本 `.deepworks/tmp/migrate_local_db.py`，备份 `.deepworks/tmp/feedback_backup_before_lover_20260917-223326.db`。迁移后本地仍是 1 行（id=2「可以可以」，relation 为 NULL）。
+- **SQLite 无法 ALTER CHECK 约束** → 本地 `db/feedback.db` 用「重建表」方式迁移：备份 → 读出全部行 → `drop table feedback` → `executescript(db/schema.sql)`（顺带重建 2 个索引 + updated_at 触发器）→ 按原 id 回插 → 修 `sqlite_sequence` → 探针验证。脚本 `报告源件\scripts\反馈\migrate_local_db.py`，备份 `.deepworks/tmp/feedback_backup_before_lover_20260917-223326.db`。迁移后本地仍是 1 行（id=2「可以可以」，relation 为 NULL）。
 - 本地端到端实测脚本 `.deepworks/tmp/probe_lover.py`（**先重启 8000 加载新 `server.py` 并清限流**）：`relation=lover` → **201 `{"ok": true, "id": 6}`**；`relation=online` → **400 `{"ok": false, "error": "「与主页主人的关系」取值不合法。"}`**；`/admin` 页面含「恋人」、**不含**「网友」；classmate/friend/family 均 201；探针行已全部 `action=delete` 清掉。
 - 限流再次复现：连打第 4、5 条时命中 `RATE_MAX=5 / RATE_WINDOW=600` → **HTTP 429**，**属于正常保护而不是代码错误**；验证脚本要分批或重启服务。
 - 交付物已重建：`outputs/源码/`（19 文件，index.html 含 lover 无 online）+ 单文件版 **112,775 B / MD5 `3D40E14F96E35D987210786C2815E566`**，`remaining local refs 0` / `cdn refs 0`。
-- ~~**故意不改**：`版本存档/V3-意见反馈/`（V3 交付时的历史快照，里面仍是「网友」）、`作业提交区/01-截图/`（已交付的旧截图）~~ → **⛔ 已在第 26 次被用户推翻并更新**：用户要求「当作第三版最终形态保存」，故 `版本存档/V3-意见反馈/` 与新截图**已刷新为「恋人」版最终形态**（旧版整体备份在 `.deepworks/tmp/backup_before_v3_final_20260917-2310/`，可回滚）。**「历史快照不追改」原则仍适用于 V1 / V2 存档与更早的交付截图**（那些不动）。
+- ~~**故意不改**：`版本存档/V3-意见反馈/`（V3 交付时的历史快照，里面仍是「网友」）、`作业提交区/01-截图/`（已交付的旧截图）~~ → **⛔ 已在第 26 次被用户推翻并更新**：用户要求「当作第三版最终形态保存」，故 `版本存档/V3-意见反馈/` 与新截图**已刷新为「恋人」版最终形态**（原回滚点暂存目录已在 2026-10-03 清理中删除）。**「历史快照不追改」原则仍适用于 V1 / V2 存档与更早的交付截图**（那些不动）。
 
 ## 第 26 次讨论：第三版最终形态定稿归档（2026-09-17）
 
@@ -469,7 +491,7 @@ $line = 'cmd.exe /c python "' + $srv + '" --port 8000 >> "' + $log + '" 2>> "' +
 - `js/main.js`：9 组 QA 答案 + `KNOWLEDGE` 四项改写；修掉病句「是要一种」→「是一种」；`keys` 去掉重复的「成就」并补入「街健」「跑量」「这学期」等口语说法。
 - `css/main.css`：删除 `.notes-grid .note-card:first-child` 跨列规则（桌面 / 1040 / 720 **三处**），02 区块改为 4 张等宽卡。
 - 改后指纹：`index.html` 37,373 / `CE8FEBE92379E62738DFB2C03297A91E`；`css/main.css` 34,625 / `B61824AFE0742918CDE9283CC0094B02`；`js/main.js` 14,082 / `1B6153AB261D3C12B01A4F26BE7A82C3`。
-- 改前基线备份 `.deepworks/tmp/v4_content_baseline/`（三个文件）；回滚点 `C:\Users\ASUS\AppData\Local\Temp\opencode\v4_baseline_20260924\`。
+- 改前基线备份 `报告源件\参考资料\V4内容基线/`（三个文件）；回滚点 `C:\Users\ASUS\AppData\Local\Temp\opencode\v4_baseline_20260924\`。
 
 ### 四、⭐ 本轮踩到的两个坑（务必记住）
 
@@ -692,7 +714,7 @@ $line = 'cmd.exe /c python "' + $srv + '" --port 8000 >> "' + $log + '" 2>> "' +
 
 - alpha 平均差 **0.00**；引用改动 **11 处**（`index.html` 7 / `css/main.css` 1 / `pages/` 各 1）；断言站内无 `.png|.jpg|.jpeg` 图片引用残留。
 - 换图后整页重测：溢出 0、坏图 0、页高与换图前**完全一致**、6 张图自然尺寸与原图逐一相同。**首屏桌面 1068.8 KB → 337.9 KB（−68.4%）**。
-- 原图保留在 `版本存档/V5-回归修复与图片优化/原始位图/`（5 张 988 KB），备份另在 `.deepworks/tmp/figs_src_v4/`。
+- 原图保留在 `版本存档/V5-回归修复与图片优化/原始位图/`（5 张 988 KB），备份另在 `报告源件\原始图片\站点插画原图/`。
 
 ### 四、反馈通道改为自动识别（`js/feedback-config.js` 1,887 → 3,593 B）
 
@@ -717,8 +739,8 @@ $line = 'cmd.exe /c python "' + $srv + '" --port 8000 >> "' + $log + '" 2>> "' +
 | 截图 | `V5-桌面端截图.png` 1440×5391 / 2,831,495 B / `EAEDA2C3E2BDBB66A32478584503E80D`；`V5-手机端截图.png` 390×7456 / 1,317,648 B / `9CEF347699910486189FF83C06AB621C`；**归档 / 提交区 / 预览三处 MD5 一致** |
 | 二级页截图 | `outputs/第五版-预览/二级页/` 6 张：about 1440×1252 / 390×1436、blog 1440×1189 / 390×1344、projects 1440×1028 / 390×1195 |
 | 单文件版 | `outputs/棋路漫漫-个人主页-单文件版.html` **791,188 B / `0370D3DD3D3F0855C5224356ED6FF498`**；内联 1 个 `<style>` + 4 个 `<script>` + 5 张图（`data:image` 8 处）+ 12 个内联 `<svg>`；正文本地引用仅 3 个 `pages/*.html` 导航链接、外链 0；与源页面 1440 宽逐像素差 **0.22%**（差异全部落在两处动效：首屏 `.avatar-float` 浮动 ±9px、右下 `.fabPulse`）；数字分身 4 问全对 |
-| `outputs/源码/` | **27 个站点文件**（= 站点实际引用的全部文件，不含仓库级 `README.md` / `opencode.jsonc`；二次同步：更新 2 = `feedback-config.js` + `feedback.js`）+ 单文件版副本（MD5 一致）= **28 文件**；V4 时代 2 张旧位图**已按用户确认移出**到 `.deepworks/tmp/leftover_v4_imgs/`（未删除、MD5 一致可取回） |
-| 发布前必查 | 站点 22 个文本文件扫描 `uploads/` / `.deepworks/` / `版本存档/` / `作业提交区/` / `outputs/` / 本机 db 与令牌文件 → 首次 2 处命中（上述两条 JS 注释）、改后 **0 处**；位图残留 0 处（`.deepworks/tmp/prepublish_check_v5.py`） |
+| `outputs/源码/` | **27 个站点文件**（= 站点实际引用的全部文件，不含仓库级 `README.md` / `opencode.jsonc`；二次同步：更新 2 = `feedback-config.js` + `feedback.js`）+ 单文件版副本（MD5 一致）= **28 文件**；V4 时代 2 张旧位图**已按用户确认移出**到 `.deepworks/tmp/leftover_v4_imgs/`（原暂存目录已在 2026-10-03 清理中删除，**不可取回**） |
+| 发布前必查 | 站点 22 个文本文件扫描 `uploads/` / `.deepworks/` / `版本存档/` / `作业提交区/` / `outputs/` / 本机 db 与令牌文件 → 首次 2 处命中（上述两条 JS 注释）、改后 **0 处**；位图残留 0 处（`报告源件\scripts\站点维护\prepublish_check_v5.py`） |
 | 文档 | `README.md` 改写（V5 段 + 体积表 + 目录清单 + 自动识别说明）、`outputs/第五版-内容改动清单.md` 新建、`版本存档/V5-*/归档说明.md` 新建 |
 
 ### 七、关键踩坑（下一轮必读）
@@ -735,7 +757,7 @@ $line = 'cmd.exe /c python "' + $srv + '" --port 8000 >> "' + $log + '" 2>> "' +
 - **已推送**（2026-10-02）：`main` = `76a18ab`（提交信息「第四、五版：内容精简与背景大图，六项回归修复与 WebP 图片优化」），`push` 成功 `065d717..76a18ab`；线上 <https://qilumanman.github.io/> 首页 **25,975 B 与本地逐字节一致**，`assets/images/figures/agent-v2.webp` 线上 200 / 29,118 B。
 - **线上反馈已恢复**（2026-10-02）：Supabase 项目由 Paused 恢复为 Active，URL 与 anon key 未变，无需改代码；三项实测见「第 33 次讨论」。
 - 低优先版式小项（本轮未做）：品牌副标题 11.5px 是否提到 12px；首屏 Bento 卡是否再紧凑；「脑机接口」卡是否加 EEG 波形装饰；`📍 深圳` 是否换 Lucide `map-pin`（去 Emoji）。
-- `outputs/源码/` 内 2 个 V4 时代旧位图**已按用户确认清理**（移入 `.deepworks/tmp/leftover_v4_imgs/`，未删除、MD5 一致可随时取回）→ 现 `outputs/源码/` = **28 文件**（27 站点文件 + 单文件版副本）；`outputs/预览/` 旧图、`outputs/第四版-内容对照表.xlsx` 是否重出仍未定。
+- `outputs/源码/` 内 2 个 V4 时代旧位图**已按用户确认清理**（原暂存目录已在 2026-10-03 清理中删除，**不可取回**）→ 现 `outputs/源码/` = **28 文件**（27 站点文件 + 单文件版副本）；`outputs/预览/` 旧图、`outputs/第四版-内容对照表.xlsx` 是否重出仍未定。
 - V5 归档说明已记录一处版本遗留不一致：V4 归档写的 `index.html` = 37,952 B，而 V4 定稿当轮构建脚本文档里出现过 22,522（那是**字符数**不是字节数）等不同口径，V5 一律以**本轮实测值**为准。
 
 ## 第 33 次讨论：交付形态升级 —— 发布 V5 + 恢复线上通道 + 改交「英文报告 PDF」
@@ -813,9 +835,9 @@ $line = 'cmd.exe /c python "' + $srv + '" --port 8000 >> "' + $log + '" 2>> "' +
 ### 二、交付物：报告 PDF（已完成）
 
 - 路径 `outputs/Lan Xiyang_Personal Homepage.pdf`：**959,328 B / 13 页 A4 / MD5 `4B062F3B1505D26C9CEE610A3DAE456E`**（末次重建于版本口径统一之后）；内嵌 **12 张插图**（DCTDecode）+ **9 个字体子集**（SegoeUI / Georgia / Consolas / MicrosoftYaHei / NSimSun，中文「可以」由 NSimSun 与 YaHei 子集覆盖）。
-- **生成链（可复用）**：`.deepworks/tmp/report.html`（自写 HTML + CSS，`@page A4 13/14mm`、`print-color-adjust:exact`）→ 连同 `report_img/` 暂存到**纯 ASCII 目录** `C:\Users\ASUS\AppData\Local\Temp\opencode\report\` → Edge `--headless=new --disable-gpu --no-pdf-header-footer --virtual-time-budget=25000 --print-to-pdf=<ASCII 无空格路径>` → `Copy-Item` 到 `outputs/Lan Xiyang_Personal Homepage.pdf`。
+- **生成链（可复用）**：`报告源件\html\report.html`（自写 HTML + CSS，`@page A4 13/14mm`、`print-color-adjust:exact`）→ 连同 `report_img/` 暂存到**纯 ASCII 目录** `C:\Users\ASUS\AppData\Local\Temp\opencode\report\` → Edge `--headless=new --disable-gpu --no-pdf-header-footer --virtual-time-budget=25000 --print-to-pdf=<ASCII 无空格路径>` → `Copy-Item` 到 `outputs/Lan Xiyang_Personal Homepage.pdf`。
 - 结构：封面（标题/副题/Lan Xiyang/日期/线上链接/关键事实表/AI 辅助声明）→ Overview → **(a)** 四版开发史（V1 1280×2400、V2 1440×4403、V3 1440×5548、V4 1440×5323、final pass 1440×5391，含截图与逐版说明）→ **(b)** 11 行功能-来源表 + 三段专题（数字分身诚实性、19 路围棋、about/contact 图）→ **(c)** 11 个问题（症状/原因/修法/证据）+ 2 条次级问题 → **(d)** 反馈通道设计 + 真实留言「可以可以」4/5 + 8 行决策-理由表 + 4 条工作方式改变 → 附录（仓库结构、核验方法、诚实限制）。
-- **素材**：`.deepworks/tmp/report_img/*.jpg` 13 张 / 668,371 B（`make_report_imgs.ps1` 从 `作业提交区/01-截图/` 与 `outputs/第五版-预览/` 用 GDI+ 按实测坐标裁出；`m1.jpg` 备用未用）；**区块坐标来源**：仓库根 `__probe_sections.html`（iframe `/index.html`，1440 宽）→ `--dump-dom` → `parse_probe.py`：header 0–69、hero 69–765、about 1258–1793、learning 1793–2297、avatar-chat 2297–2897、hobby 2897–3751、contact 3829–4146、feedback 4146–5291、footer 5331–5417、goBoard 3159–3499、chatWindow 2589–2739、fbForm 4399–5271、aiFab 5306–5374。
+- **素材**：`报告源件\report_img/*.jpg` 13 张 / 668,371 B（`make_report_imgs.ps1` 从 `作业提交区/01-截图/` 与 `outputs/第五版-预览/` 用 GDI+ 按实测坐标裁出；`m1.jpg` 备用未用）；**区块坐标来源**：仓库根 `__probe_sections.html`（iframe `/index.html`，1440 宽）→ `--dump-dom` → `parse_probe.py`：header 0–69、hero 69–765、about 1258–1793、learning 1793–2297、avatar-chat 2297–2897、hobby 2897–3751、contact 3829–4146、feedback 4146–5291、footer 5331–5417、goBoard 3159–3499、chatWindow 2589–2739、fbForm 4399–5271、aiFab 5306–5374。
 
 ### 三、版本口径统一（已发布）
 
@@ -838,6 +860,95 @@ $line = 'cmd.exe /c python "' + $srv + '" --port 8000 >> "' + $log + '" 2>> "' +
 - `outputs/源码/js/feedback-config.js` **3,593 → 3,989 B**（此前快照落后于仓库与线上；现与仓库逐字节一致），其余 8 个源文件（`index.html` / `css/main.css` / `js/*` / `pages/*`）本就一致。
 - 删除仓库根探针页 `__probe_sections.html`；`git status` 仅站点 4 文件改动。
 - 线上复核：`https://qilumanman.github.io/` HTTP 200 / 25,975 B（**发布后须轮询**，Pages 构建有约 25 秒延迟）。
+
+## 第 35 次讨论：报告改出中文版（2026-10-02，同日追加）
+
+### 一、用户决定
+「那个 PDF 改成中文版」—— 报告正文全部改为简体中文，**设计（HTML/CSS/版式）与全部数据不出任何改动**，只有文字语言变。
+
+### 二、交付物（已替换）
+- `outputs/Lan Xiyang_Personal Homepage.pdf` 现为**中文版**：**1,474,812 B / 12 页 A4 / MD5 `1193BE7BB664FF7A976CA8CF43E209E3`**，MediaBox 全为 `0 0 594.95996 841.91998`；12 张插图、11 个嵌入字体程序（MicrosoftYaHei + MicrosoftYaHei-Bold + SegoeUI 三字重 + Consolas + Georgia-Bold + NSimSun）全部子集嵌入。
+- **英文版备份**：`报告源件\pdf\report_en_backup.pdf`（959,328 B / 13 页 / MD5 `4B062F3B1505D26C9CEE610A3DAE456E`）—— 不在产物目录，需要换回时 1 分钟即可。
+- 中文版比英文版**少 1 页**（12 vs 13）：中文信息密度更高。
+
+### 三、生产链（新增文件，可复用）
+1. `cn_head.html` —— 封面 + 「1. 总览」中文版（我手工写）；CSS 只调三处：正文 9.15→**9.4pt**、行高 1.4→**1.5**、标题字体栈插 `Microsoft YaHei`（Latin 仍走 Georgia / Segoe UI，CJK 落雅黑）。
+2. `cn_a.html` / `cn_b.html` / `cn_c.html` / `cn_d.html` / `cn_e.html` —— 五个章节的中文片段。
+3. `assemble_cn.py` —— 拼装 + 三重核查（见下），输出 `report_cn.html`（44,273 B / 411 行；英文版 46,743 B / 420 行）。
+4. `pdf_build_cn.ps1` —— 暂存纯 ASCII 目录 `C:\Users\ASUS\AppData\Local\Temp\opencode\report_cn\` + Edge `--headless=new --no-pdf-header-footer --print-to-pdf`，再复制到 `outputs\Lan Xiyang_Personal Homepage.pdf`（沿用「先打到无空格路径」的规矩）。
+
+### 四、翻译分片策略（有效，可复用）
+按英文源行号切五段（a 133–191 / b 194–227 / c 230–314 / d 317–379 / 附录 382–417），**用五个并行子代理**各自「read 行区间 → 译 → write 片段」，我负责封面/总览/CSS 与拼装。给子代理的硬规则：①标签/class/属性/`<tr>`/`<li>`/`<figure>` 数量与顺序逐字保留；②数字、日期、MD5、文件名路径、URL、代码标识符、CSS 类名、产品名原样照抄；③`<span class="mono">`/`<code>` 内容不译；④附录 A.1 的**目录树整块不译**；⑤第一人称复盘语气不变；⑥中文标点 + 中英文间半角空格。→ 五片段结构核查**全部 20 类标签数量完全一致**。
+
+### 五、验收配方（本次新建，强烈建议复用）
+- `assemble_cn.py`：①**标签数量逐类比对**（20 类标签全一致才过）；②**数字串多重集比对**（差异只允许来自中文日期格式与标点，如 `3 September`→`9 月 3 日` 多出 `9`/`10`、`37,952,`→`37,952` 少个逗号）；③**连续英文整句扫描**（≥4 个纯英文词应为 0 处）→ 本次 0 处。
+- `pdf_verify_cn.py`：④空白页检查；⑤**中文字形覆盖检查（防豆腐块）** —— 从 HTML 取全部非 ASCII 字符（842 个），与 PDF 全部 ToUnicode CMap 的目标码点集合（913 个）求差 → **缺失 0 个**。这条比「字体是否嵌入」更强，能直接证明每个中文字都有字形。
+- `pdf_pages_cn.py`：⑥逐页内容量 —— 12 页内容流 9.7–58.8 KB、文本操作 313–1842，无近空白页。
+- 术语统一（中文版内部）：次级页→**二级页**、访问者→**访客**、校验和→**校验值**、触控目标→**点按区域**。
+
+### 六、未做（可选，等用户发话）
+- 交付文件名仍是作业要求格式 `Lan Xiyang_Personal Homepage.pdf`（英文名、中文内容）；若要中文文件名需另存。
+- 中文版尚未提交 git（PDF 在 `outputs/`，本就被 .gitignore 忽略）；本文件（SKILL.md）本轮改动也**未提交**，下次可与站点改动一并提交。
+
+## 第 36 次讨论：精简版报告（7 页，方便老师查阅）（2026-10-02）
+
+### 一、用户要求与三问确认
+用户：「能不能再精简一点，方便老师查阅」。三问确认结果 —— ①压到 **6–7 页**；②**另存精简版，完整版保留**；③**截图 + 数据表优先**（压叙述文字）。
+
+### 二、交付物
+- 新增 `outputs/Lan Xiyang_Personal Homepage - 精简版.pdf` = **1,412,645 B / 7 页 / MD5 `1447984F3739DC46C48DE9479058687A`**；12 张插图、10 个嵌入字体程序；正文 8.6pt / 行高 1.34 / 页边距 9.5–11mm。
+- 完整版仍在 `outputs/Lan Xiyang_Personal Homepage.pdf`（1,474,812 B / 12 页，中文版）；英文版备份 `报告源件\pdf\report_en_backup.pdf`（959,328 B / 13 页）。
+- **⚠️ 已知冲突**：作业要求 8–14 页，7 页低于下限。已明确告知用户，用户仍选 6–7 页。若要合规，补回一页即可（把 (c) 十一例的「验证依据」全文移作附录，或加一页版本截图集）。
+
+### 三、精简手法（有效，可复用）
+1. **封面改成「页首区块」，不再独占一整页** —— 直接省掉一整页，且不影响观感（金色顶线 + 标题 + 元信息行 + 目录行）。
+2. **(c) 十一个问题改成四列表格「问题 / 原因 / 修法 / 验证依据」** —— 省空间最多，11 例（含全部数字）压进约 1 页；长段落全部消失，且更像「可查阅」的形态。老师查阅友好度提升最明显的一步。
+3. 长段改要点、删重复句（(a) 各版本压到 2 句、(d-1) 合并成一段、(d-3) 保留 4 条短句）。
+4. 全局收紧：字号 8.9→**8.6pt**、行高 1.4→**1.34**、页边距 11/12→**9.5/11mm**、表格内边距 1.4pt。
+5. 图宽按实测长宽比收窄：v1/v2/v4 46→40%、v3 50→44%、m5 22→**15%**、feat-twin 58→50%、feat-hobby 50→44%、feat-feedback 46→40%、shotgrid 用 `max-width:82%`。
+6. 迭代：第一版 8 页（字号 8.9pt）→ 收紧 + 砍 15% 文字 → **7 页**。
+
+### 四、关键经验：先量截图长宽比，再定图宽
+`report_img` 里的截图都是**横向裁切**，不是整页长图：`v1–v5` 约 900×719（1:0.8）、`admin` 1:0.31、`feat-contact` 1:0.26、`feat-twin` 1:0.45、`feat-hobby` 1:0.51、`feat-feedback` 1:0.74、`feat-about` 1:0.76；**唯一高瘦的是手机长图 `m1`/`m5` = 300×769（1:2.56）** —— 给 22% 宽时它一行就吃掉约 105mm（三分之一页），必须压到 15% 左右。用纯 Python 读 JPEG SOF 标记取尺寸（无需 PIL），先量后调，是最快的调版方式。
+
+### 五、新增验收脚本（可复用）
+`报告源件\scripts\报告\pdf_check_any.py <pdf> <html>` —— 一次跑完：页数 / 插图数 / 字体程序数 + **逐页内容量**（找半空页）+ **字形覆盖**（正文非 ASCII 字符 vs PDF 全部 ToUnicode CMap 码点）+ **42 项关键数据是否保留**（专门防「精简把数字删了」）。精简版实测：7 页均有实质内容（无半空页）、810 个非 ASCII 字符 100% 覆盖、42/42 关键数据保留。
+生成脚本：`报告源件\scripts\报告\pdf_build_lite.ps1`（读 `报告源件\html\report_lite.html`，输出暂存目录里的 `report_lite_build.pdf`，再由 Python 复制成中文文件名）。
+
+## 第 37 次讨论：作业提交后的工作区清理（2026-10-03）
+
+### 一、用户要求与四问确认
+用户：「把没必要的东西删掉，但把以后还用得上的个人信息留下」。四问全部按推荐选项执行 —— ①`.deepworks\tmp` **先复制源件再全清**；②清掉 outputs 旧预览与未采用候选；③**连空脚手架目录与 `__pycache__` 一起删**；④**提交**本次记忆改动（已 commit SKILL.md）。
+
+### 二、先搬家后删除：新建 `报告源件\`（永久保留）
+复制 **85 个文件 / 9,099,746 B**，**逐字节大小校验全部一致**。结构与用途见 `报告源件\README.md`：
+`html\`(9 份报告 HTML) · `pdf\`(英文备份 + 精简版构建件 + 两份交付备份) · `report_img\`(13 张报告插图) · `scripts\报告\`(16) · `scripts\站点维护\`(12) · `scripts\反馈\`(9) · `原始图片\站点插画原图\`(5) · `原始图片\素材候选\`(13) · `参考资料\`(3 + `V4内容基线\` 3)。
+**最要紧的是 `原始图片\站点插画原图\`**：站点 5 张插画（agent-avatar / agent-v2 / identity-portrait / dragon-portrait / april-violin-piano）**原图只此一份**，合计 1,011,241 B —— 正好是报告里「图片优化前 1,011,241 → 优化后 259,840 字节（−74.3%）」的数。以后换图/重压缩都从这里改。
+
+### 三、删除清单（共释放 1,113,149,599 B ≈ 1,061.6 MB / 19,824 文件）
+- `.deepworks\tmp` 全部内容 **1,084,366,283 B / 19,776 文件**：约 50 个 Edge 无头临时配置目录 `edge_*`/`ep_*`/`eprof_*`（各约 12 MB）、`ep_live` 333 MB、几百个 probe/dom 文本与重复截图、`hero_shots` 28 MB（搁置的身份卡素材）、`backup_before_v3_final_*` 9.4 MB、`__pycache__`。**目录保留为空**（DeepWorks 会话临时区仍在用）。
+- `outputs\` 旧预览与未采用候选：`第四版-预览` 7,421,821 B、`第五版-预览` 5,657,031 B、`预览` 2,367,446 B、`imagegen` 5,060,434 B；顶层 `output\`（AI 龙族候选图）8,221,890 B。
+- `__pycache__`(40,804 B)、`db\__pycache__`(13,890 B)、8 个空脚手架目录 `01-文案写作`…`08-音频视频`、`components`、`data`（只含空子目录、0 文件，逐个确认后才删）。
+- **保留**：站点源码（index.html / pages / css / js / assets / content / db / server.py / README.md / .gitignore）、`outputs\` 交付物、`报告源件\`、`uploads\`、`版本存档\`、`作业提交区\`、`.opencode\`（含 node_modules 54,966,531 B，**不动**）。
+
+### 四、⚠️ 惊险事件：完整版 PDF 靠 MD5 才认出来
+清理前核对时发现 `outputs\Lan Xiyang_Personal Homepage.pdf` 里装的其实是**精简版内容**（1,412,645 B / MD5 `1447984F…`），而**完整版 12 页**（MD5 `1193BE7B…`）已不在 `outputs\` —— 文件名对、大小也像个正经 PDF，只有 MD5 能戳穿。所幸完整版仍留在构建暂存目录 `C:\Users\ASUS\AppData\Local\Temp\opencode\report_cn\build.pdf`，按原 MD5 恢复无误，两份交付物 MD5 现已与定稿时完全一致。
+**教训（以后必须做）**：
+1. **每份交付物都留一份带清晰名字的备份**（现已放 `报告源件\pdf\交付备份-完整版-12页.pdf` / `交付备份-精简版-7页.pdf`）。
+2. **任何交付/清理动作后，逐份用 MD5 核对内容**，不能只看文件名、日期或大小。
+3. 构建暂存目录（`%LOCALAPPDATA%\Temp\opencode\report_cn\`、`report_lite\`）在确认永久备份之前**不要清**。
+
+### 五、清理后体积（顶层只剩这些）
+`assets` 680,316 B(15) · `content` 2,506 B(3) · `css` 40,335 B(1) · `db` 58,686 B(6) · `js` 43,238 B(4) · `pages` 11,059 B(3) · `outputs` **5,328,576 B(34)** · `报告源件` **11,992,346 B(88)** · `uploads` 8,336,864 B(42) · `版本存档` 22,375,932 B(174) · `作业提交区` 13,098,184 B(13) · `.opencode` 55,159,637 B(3674) · `.git` 4,804,097 B(178) · `index.html` 25,975 B · `server.py` 30,556 B · `README.md` 15,678 B · `.gitignore` 993 B · `opencode.jsonc` 83 B。`.deepworks\` 现为空占位目录。
+
+### 六、⚠️ 一并删掉的旧工具与暂存目录（必须知道）
+
+按用户批准的「全清」范围，第 18–36 次讨论中提到的一批旧脚本与暂存目录也一起删了，**没有保留**：
+
+- 一次性工具/探针：`shot_v3.ps1`、`shot_final.ps1`、`shot_final2.ps1`、`crop_final.ps1`、`analyze.ps1`、`cluster.ps1`、`run_probe_http_v3.ps1`、`probe_v3.js`、`probe_api.py`、`probe_delete.py`、`probe_lover.py`、`e2e_fields.py`、`effects_probe.js`、`bottom_probe.js`、`fix_css.py`、`add_footer_links_css.py`、`footer_check.py`、`make_content_xlsx.py`、`verify_content_xlsx.py`、`theme_warm.ps1`、`remove_unused_images18.ps1`、`sync_submission18.ps1`、`build_outputs.ps1`、`start_preview_server.ps1`、`start_server.cmd`、`whichdir_v3.ps1`、`cleanup_profiles_v3.ps1`。
+- 暂存目录：`preview\`、`removed_images18\`、`leftover_v4_imgs\`、`shots_v4_stale\`、`junk_v4\`、`v2_stray_cleanup\`、`probe_pages\`、`backup_before_v3_final_20260917-2310\`、`feedback_backup_*.db`、`hero_shots\`（回滚点 38 文件 / 9.39 MB；hero_shots 为搁置的身份卡截图 21 张 / 28 MB）。
+
+**影响评估**：①报告、站点维护、反馈验证的**主力脚本都已按批保留**在 `报告源件\scripts\`（报告 16 + 站点维护 12 + 反馈 9），足以重出 PDF、重做体检、重测反馈；②丢失的是截图/探针/调版这类**小而一次性的工具**，技法在本文档里都有记录，重写成本低（十几行 PowerShell/Python）；③**唯一实质损失**是 `backup_before_v3_final_*` 这个 V3 回滚点 —— 但 V3 定稿已在 `版本存档\V3-意见反馈\` 与线上站点里，回滚能力不受影响；④「移出未删、可随时取回」的几张废图确认丢失，它们本就是用户确认过的废件。
 
 ## 新对话启动流程
 
