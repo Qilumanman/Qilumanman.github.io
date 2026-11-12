@@ -5,6 +5,9 @@
 # 后台管理令牌（明文，泄露=任何人都能删反馈）
 db/admin_token.txt
 
+# 数字分身大模型 API 配置（含通义千问 API key 明文，绝不入库）
+db/llm-config.json
+
 # 本地自测数据库（含测试留言）
 db/*.db
 db/*.db-journal
@@ -40,3 +43,7 @@ desktop.ini
 .vscode/
 .idea/
 *.log
+
+
+# 云函数部署目录（含 DeepSeek key 副本，严禁入库）
+deploy-fc/

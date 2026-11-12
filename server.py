@@ -39,6 +39,8 @@ import sqlite3
 import sys
 import threading
 import time
+import urllib.error
+import urllib.request
 from html import escape
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, urlparse
@@ -107,6 +109,18 @@ DENY_PREFIXES = (
     "/作业提交区/",
 )
 
+# ---- 数字分身（大模型代理）配置 ----
+# db/llm-config.json 存 API key（已 gitignore，绝不入库）；db/avatar/ 存知识库与提示词
+LLM_CONFIG_PATH = os.path.join(DB_DIR, "llm-config.json")
+AVATAR_DIR = os.path.join(BASE_DIR, "db", "avatar")
+
+CHAT_RATE_WINDOW = 60
+CHAT_RATE_MAX = 20
+MAX_CHAT_MESSAGE = 500
+MAX_CHAT_HISTORY = 10
+_chat_rate_lock = threading.Lock()
+_chat_rate_hits = {}
+
 # 简易限流：同一 IP 10 分钟内最多 5 条
 RATE_WINDOW = 600
 RATE_MAX = 5
@@ -114,6 +128,99 @@ _rate_lock = threading.Lock()
 _rate_hits = {}
 
 DB_LOCK = threading.Lock()
+
+
+# ---------------------------------------------------------------- 数字分身
+
+def load_llm_config():
+    """读取大模型配置（api_key / model）。key 只在服务端使用，不打日志、不返回给前端。"""
+    cfg = {
+        "api_key": "",
+        "model": "qwen-plus",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions",
+    }
+    try:
+        with open(LLM_CONFIG_PATH, "r", encoding="utf-8") as fh:
+            data = json.load(fh)
+        if isinstance(data, dict):
+            for k in cfg:
+                if k in data and isinstance(data[k], str) and data[k].strip():
+                    cfg[k] = data[k].strip()
+    except Exception:
+        pass
+    return cfg
+
+
+def build_avatar_system_prompt():
+    """把 db/avatar/ 下的提示词与全部知识库拼成 system 消息。
+
+    自动发现：system-prompt.txt 固定在最前；数字开头的 .md 按文件名顺序
+    （01-、02-…05-…）依次拼接；training-log.md 是训练记录，不进入提示词。
+    每次请求都读文件：改完知识库无需重启即可生效（文件很小）。
+    """
+    parts = []
+    names = ["system-prompt.txt"] + sorted(
+        n for n in os.listdir(AVATAR_DIR)
+        if n.endswith(".md") and n[0].isdigit()
+    )
+    for name in names:
+        path = os.path.join(AVATAR_DIR, name)
+        try:
+            with open(path, "r", encoding="utf-8") as fh:
+                text = fh.read().strip()
+            parts.append(text if text else "[缺资料：%s]" % name)
+        except OSError:
+            parts.append("[缺资料：%s]" % name)
+    return "\n\n".join(parts)
+
+
+def chat_rate_limited(ip):
+    """数字分身接口限流：同一 IP 每分钟最多 CHAT_RATE_MAX 次。"""
+    now = time.time()
+    with _chat_rate_lock:
+        hits = [t for t in _chat_rate_hits.get(ip, []) if now - t < CHAT_RATE_WINDOW]
+        if len(hits) >= CHAT_RATE_MAX:
+            _chat_rate_hits[ip] = hits
+            return True
+        hits.append(now)
+        _chat_rate_hits[ip] = hits
+        return False
+
+
+def call_qwen(cfg, system_prompt, history):
+    """调通义千问（DashScope 兼容 OpenAI 格式）。
+
+    history: [{"role": "user"|"assistant", "content": ...}, ...]，最后一条必须是 user。
+    返回助手回复文本；网络/状态码/解析异常由调用方捕获。
+    """
+    messages = [{"role": "system", "content": system_prompt}]
+    messages.extend(history)
+    body = json.dumps(
+        {
+            "model": cfg["model"],
+            "messages": messages,
+            "temperature": 1.3,
+            "max_tokens": 600,
+        },
+        ensure_ascii=False,
+    ).encode("utf-8")
+    req = urllib.request.Request(
+        cfg["base_url"],
+        data=body,
+        method="POST",
+        headers={
+            "Authorization": "Bearer %s" % cfg["api_key"],
+            "Content-Type": "application/json",
+        },
+    )
+    with urllib.request.urlopen(req, timeout=30) as resp:
+        data = json.loads(resp.read().decode("utf-8"))
+    try:
+        return data["choices"][0]["message"]["content"].strip()
+    except (KeyError, IndexError, TypeError, AttributeError):
+        raise RuntimeError(
+            "模型返回格式异常：%s" % json.dumps(data, ensure_ascii=False)[:200]
+        )
 
 
 # ---------------------------------------------------------------- 数据库
@@ -404,6 +511,76 @@ class Handler(SimpleHTTPRequestHandler):
         given = (query.get("token") or [""])[0]
         return self.token and secrets.compare_digest(given, self.token)
 
+    # ---- 数字分身
+
+    def handle_chat(self, data):
+        """POST /api/chat —— 访客提问 → 服务端带 key 调通义千问 → 返回回答。
+
+        前端传 {"message": "...", "history": [...]}；history 最多保留最近
+        MAX_CHAT_HISTORY 条，每条截断到 MAX_CHAT_MESSAGE 字，role 只收
+        user / assistant。API key 永不出现在响应里。
+        """
+        ip = self.client_address[0]
+        if chat_rate_limited(ip):
+            return self.send_json(
+                {"ok": False, "error": "问得太快了，请稍等一下再继续。"}, 429
+            )
+
+        message = data.get("message")
+        if not isinstance(message, str) or not message.strip():
+            return self.send_json({"ok": False, "error": "消息不能为空。"}, 400)
+        message = message.strip()
+        if len(message) > MAX_CHAT_MESSAGE:
+            return self.send_json(
+                {
+                    "ok": False,
+                    "error": "问题太长了，请控制在 %d 字以内。" % MAX_CHAT_MESSAGE,
+                },
+                400,
+            )
+
+        history = []
+        for item in (data.get("history") or [])[-MAX_CHAT_HISTORY:]:
+            if not isinstance(item, dict):
+                continue
+            role = item.get("role")
+            content = item.get("content")
+            if role in ("user", "assistant") and isinstance(content, str) and content.strip():
+                history.append({"role": role, "content": content.strip()[:MAX_CHAT_MESSAGE]})
+        history.append({"role": "user", "content": message})
+
+        cfg = load_llm_config()
+        if not cfg.get("api_key"):
+            return self.send_json(
+                {"ok": False, "error": "数字分身的大脑还没有配置好，请稍后再来。"}, 503
+            )
+
+        try:
+            system_prompt = build_avatar_system_prompt()
+            reply = call_qwen(cfg, system_prompt, history)
+        except urllib.error.HTTPError as e:
+            detail = ""
+            try:
+                detail = e.read().decode("utf-8")[:200]
+            except Exception:
+                pass
+            self.log_message("chat HTTP %s %s" % (e.code, detail))
+            return self.send_json(
+                {"ok": False, "error": "模型服务暂时不可用（HTTP %s）。" % e.code}, 502
+            )
+        except urllib.error.URLError as e:
+            self.log_message("chat URL error %s" % e)
+            return self.send_json(
+                {"ok": False, "error": "网络连接模型服务失败。"}, 502
+            )
+        except Exception as e:
+            self.log_message("chat error %s" % e)
+            return self.send_json(
+                {"ok": False, "error": "数字分身开小差了（%s）。" % str(e)[:120]}, 502
+            )
+
+        return self.send_json({"ok": True, "reply": reply})
+
     # ---- GET
 
     def do_GET(self):
@@ -448,11 +625,13 @@ class Handler(SimpleHTTPRequestHandler):
         query = parse_qs(parsed.query)
         data = self.read_json()
 
+        if path == "/api/chat":
+            return self.handle_chat(data)
+
         if path == "/api/feedback":
             # 蜜罐：机器人填了隐藏字段，直接假装成功
             if data.get("company"):
                 return self.send_json({"ok": True, "id": None, "spam": True}, 201)
-
             ip = self.client_address[0]
             if rate_limited(ip):
                 return self.send_json(

@@ -1,6 +1,7 @@
 /* ============================================
    蓝喜阳 · 个人主页 — 数字分身聊天逻辑
-   第一版：基于关键词匹配的预设问答
+   期末版：优先调用大模型（/api/chat，服务端代理通义千问）；
+   关键词问答降级为「模型不可用时的兜底」，保证页面永远能聊。
    ============================================ */
 
 (function () {
@@ -170,16 +171,49 @@
     }, speed);
   }
 
-  // 发送并回复（"正在思考" → 打字机逐字输出）
+  // 发送并回复：优先问数字分身（大模型），失败时降级为关键词问答
+  // 最近对话上下文（多轮记忆，最多各保留 10 条 user/assistant）
+  var chatHistory = [];
+
   function ask(question) {
     if (!question.trim()) return;
     addMessage(question.trim(), true);
     var bubble = addMessage("正在思考中", false);
     bubble.classList.add("typing");
-    setTimeout(function () {
-      bubble.classList.remove("typing");
-      typeMessage(bubble, getAnswer(question));
-    }, 600);
+
+    var apiBase = (window.CHAT_CONFIG && window.CHAT_CONFIG.apiBase) || "/api/chat";
+
+    fetch(apiBase, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: question.trim(), history: chatHistory }),
+    })
+      .then(function (resp) {
+        return resp
+          .json()
+          .catch(function () {
+            return { ok: false, error: "响应解析失败" };
+          });
+      })
+      .then(function (data) {
+        bubble.classList.remove("typing");
+        if (data && data.ok && data.reply) {
+          // 大模型回答成功：记入上下文（供多轮追问）
+          chatHistory.push({ role: "user", content: question.trim() });
+          chatHistory.push({ role: "assistant", content: data.reply });
+          if (chatHistory.length > 20) {
+            chatHistory = chatHistory.slice(chatHistory.length - 20);
+          }
+          typeMessage(bubble, data.reply);
+        } else {
+          // 服务未配置 / 出错：降级为预设关键词问答（保证能聊）
+          typeMessage(bubble, getAnswer(question));
+        }
+      })
+      .catch(function () {
+        bubble.classList.remove("typing");
+        typeMessage(bubble, getAnswer(question));
+      });
   }
 
   // 表单发送
